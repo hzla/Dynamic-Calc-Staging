@@ -2975,6 +2975,13 @@ var SM_PATCH = {
         category: 'Special',
         secondaries: true,
         zp: 140
+    },
+    "Seething Cold": {
+        bp: 60,
+        type: 'Ice',
+        category: 'Special',
+        secondaries: true,
+        zp: 140
     }
 };
 var SM = (0, util_1.extend)(true, {}, XY, SM_PATCH);

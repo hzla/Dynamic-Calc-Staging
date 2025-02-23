@@ -33,6 +33,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
     };
 
 
+
     
     var result = new result_1.Result(gen, attacker, defender, move, field, 0, desc);
     if (move.category === 'Status' && !move.named('Nature Power')) {
@@ -63,10 +64,17 @@ function calculateBWXY(gen, attacker, defender, move, field) {
     else if (move.named('Techno Blast') && attacker.item && attacker.item.includes('Drive')) {
         move.type = (0, items_1.getTechnoBlast)(attacker.item);
     }
-    else if (move.named('Natural Gift') && attacker.item && attacker.item.includes('Berry')) {
+    // In CW2 Natural Gift is 80 BP normal type and does not fail with no held berry
+    else if (move.named('Natural Gift') && attacker.item && (attacker.item.includes('Berry') || TITLE == 'Cascade White 2')) {
         var gift = (0, items_1.getNaturalGift)(gen, attacker.item);
         move.type = gift.t;
-        move.bp = gift.p;
+
+        if (TITLE == 'Cascade White 2') {
+            move.bp = 80;
+        } else {
+            move.bp = gift.p; 
+        }
+        
         desc.attackerItem = attacker.item;
         desc.moveBP = move.bp;
         desc.moveType = move.type;
@@ -87,6 +95,8 @@ function calculateBWXY(gen, attacker, defender, move, field) {
     var isPixilate = false;
     var isRefrigerate = false;
     var isNormalize = false;
+    var isGalvanize = false;
+    var isLiquidVoice = false;
     var noTypeChange = move.named('Judgment', 'Nature Power', 'Techo Blast', 'Natural Gift', 'Weather Ball');
     if (!move.isZ && !noTypeChange) {
         var normal = move.hasType('Normal');
@@ -99,6 +109,12 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         else if ((isRefrigerate = attacker.hasAbility('Refrigerate') && normal)) {
             move.type = 'Ice';
         }
+        else if ((isGalvanize = attacker.hasAbility('Galvanize') && normal)) {
+            move.type = 'Electric';
+        }
+        else if ((isLiquidVoice = attacker.hasAbility('Liquid Voice') && !!move.flags.sound)) {
+            type = 'Water';
+        }
         else if ((isNormalize = attacker.hasAbility('Normalize'))) {
             move.type = 'Normal';
         }
@@ -110,10 +126,11 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         move.priority = 1;
         desc.attackerAbility = attacker.ability;
     }
-    var isGhostRevealed = attacker.hasAbility('Scrappy') || field.defenderSide.isForesight;
-    var type1Effectiveness = (0, util_2.getMoveEffectiveness)(gen, move, defender.types[0], isGhostRevealed, field.isGravity);
+    var isGhostRevealed = attacker.hasAbility('Scrappy') || field.defenderSide.isForesight || attacker.hasAbility('Normalize');
+    var isDarkRevealed = attacker.hasAbility('Inner Focus');
+    var type1Effectiveness = (0, util_2.getMoveEffectiveness)(gen, move, defender.types[0], isGhostRevealed, field.isGravity, isDarkRevealed);
     var type2Effectiveness = defender.types[1]
-        ? (0, util_2.getMoveEffectiveness)(gen, move, defender.types[1], isGhostRevealed, field.isGravity)
+        ? (0, util_2.getMoveEffectiveness)(gen, move, defender.types[1], isGhostRevealed, field.isGravity, isDarkRevealed)
         : 1;
     var typeEffectiveness = type1Effectiveness * type2Effectiveness;
     var resistedKnockOffDamage = !defender.item ||
@@ -182,7 +199,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         (move.hasType('Fire') && defender.hasAbility('Flash Fire')) ||
         (move.hasType('Water') && defender.hasAbility('Dry Skin', 'Storm Drain', 'Water Absorb')) ||
         (move.hasType('Electric') &&
-            defender.hasAbility('Lightning Rod', 'Motor Drive', 'Volt Absorb')) ||
+            defender.hasAbility('Lightning Rod', 'Motor Drive', 'Volt Absorb', 'Thunder Armor')) ||
         (move.hasType('Ground') &&
             !field.isGravity && !move.named('Thousand Arrows') &&
             !defender.hasItem('Iron Ball') && defender.hasAbility('Levitate')) || (move.flags.bullet && defender.hasAbility('Bulletproof')) || (move.flags.sound && !move.named('Clangorous Soul') && defender.hasAbility('Soundproof'))) {
@@ -220,6 +237,14 @@ function calculateBWXY(gen, attacker, defender, move, field) {
     var turnOrder = attacker.stats.spe > defender.stats.spe ? 'first' : 'last';
     var basePower;
 
+    var powerIncrement = 20
+
+    if (TITLE == "Cascade White 2") {
+        powerIncrement = 25
+    }
+    
+
+
     switch (move.name) {
         case 'Payback':
             basePower = move.bp * (turnOrder === 'last' ? 2 : 1);
@@ -237,12 +262,32 @@ function calculateBWXY(gen, attacker, defender, move, field) {
                 defender.stats.spe = 1;
             var r = Math.floor(attacker.stats.spe / defender.stats.spe);
             basePower = r >= 4 ? 150 : r >= 3 ? 120 : r >= 2 ? 80 : r >= 1 ? 60 : 40;
+
+
+            if (TITLE == "Cascade White 2") {
+                if (attacker.stats.spe > defender.stats.spe) {
+                    basePower = 110
+                } else {
+                    basePower = 55
+                }
+            }
+
+
             desc.moveBP = basePower;
             break;
         case 'Gyro Ball':
             if (attacker.stats.spe === 0)
                 attacker.stats.spe = 1;
             basePower = Math.min(150, Math.floor((25 * defender.stats.spe) / attacker.stats.spe) + 1);
+
+            if (TITLE == "Cascade White 2") {
+                if (defender.stats.spe > attacker.stats.spe) {
+                    basePower = 110
+                } else {
+                    basePower = 55
+                }
+            }
+
             desc.moveBP = basePower;
             break;
         case 'Punishment':
@@ -268,7 +313,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
             break;
         case 'Stored Power':
         case 'Power Trip':
-            basePower = move.bp + 20 * (0, util_2.countBoosts)(gen, attacker.boosts);
+            basePower = move.bp + powerIncrement * (0, util_2.countBoosts)(gen, attacker.boosts);
             desc.moveBP = basePower;
             break;
         case 'Acrobatics':
@@ -401,7 +446,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
             break;
         case 'Stored Power':
         case 'Power Trip':
-            basePower = move.bp + 20 * (0, util_2.countBoosts)(gen, attacker.boosts);
+            basePower = move.bp + powerIncrement * (0, util_2.countBoosts)(gen, attacker.boosts);
             desc.moveBP = basePower;
             break;
         case 'Acrobatics':
@@ -535,7 +580,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
                 break;
             case 'Stored Power':
             case 'Power Trip':
-                basePower = move.bp + 20 * (0, util_2.countBoosts)(gen, attacker.boosts);
+                basePower = move.bp + powerIncrement * (0, util_2.countBoosts)(gen, attacker.boosts);
                 desc.moveBP = basePower;
                 break;
             case 'Acrobatics':
@@ -647,7 +692,12 @@ function calculateBWXY(gen, attacker, defender, move, field) {
     }
     else if ((attacker.hasAbility('Reckless') && (move.recoil || move.hasCrashDamage)) ||
         (attacker.hasAbility('Iron Fist') && move.flags.punch)) {
-        bpMods.push(4915);
+        
+        if (TITLE == 'Cascade White 2' && move.flags.punch) {
+            bpMods.push(5325);
+        } else {
+            bpMods.push(4915);
+        }  
         desc.attackerAbility = attacker.ability;
     }
     if (defender.hasAbility('Toxic Boost') && move.hasType('Poison')) {
@@ -664,27 +714,46 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         desc.defenderAbility = defender.ability;
     }
     else if (defender.hasAbility('Dry Skin') && move.hasType('Fire')) {
-        bpMods.push(5120);
+        if (TITLE == 'Cascade White 2') {
+            bpMods.push(8192);
+        } else {
+            bpMods.push(5120);
+        }
+        
         desc.defenderAbility = defender.ability;
     }
-    if (attacker.hasAbility('Sheer Force') && move.secondaries) {
+    if (attacker.hasAbility('Sheer Force') && move.secondaries || (attacker.hasAbility('Liquid Voice') && move.flags.sound)) {
         bpMods.push(5325);
         desc.attackerAbility = attacker.ability;
     }
-    if (attacker.hasAbility('Rivalry') && ![attacker.gender, defender.gender].includes('N')) {
-        if (attacker.gender === defender.gender) {
-            bpMods.push(5120);
+
+    if (TITLE == 'Cascade White 2' ) {
+        if ((attacker.hasAbility('Rivalry')) && (attacker.hasType(defender.types[0]) || attacker.hasType(defender.types[1]))) {
+            bpMods.push(5447);
             desc.rivalry = 'buffed';
         }
-        else {
-            bpMods.push(3072);
-            desc.rivalry = 'nerfed';
+        if (attacker.hasAbility('Normalize')) {
+            bpMods.push(5325);
+            desc.attackerAbility = attacker.ability;
         }
-        desc.attackerAbility = attacker.ability;
-     }
+    } else {
+        if (attacker.hasAbility('Rivalry') && ![attacker.gender, defender.gender].includes('N')) {
+            if (attacker.gender === defender.gender) {
+                bpMods.push(5120);
+                desc.rivalry = 'buffed';
+            }
+            else {
+                bpMods.push(3072);
+                desc.rivalry = 'nerfed';
+            }
+            desc.attackerAbility = attacker.ability;
+        }
+    }
+
+    
     if (attacker.item && (0, items_1.getItemBoostType)(attacker.item) === move.type) {
         if (attacker.item.includes("Plate") && TITLE == "Cascade White 2") {
-            bpMods.push(5529);
+            bpMods.push(5734);
         } else {
             bpMods.push(4915);
         }
@@ -718,7 +787,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         bpMods.push(8192);
         desc.moveBP = basePower * 2;
     }
-    else if (gen.num > 5 && move.named('Knock Off') && !resistedKnockOffDamage) {
+    else if ((gen.num > 5 || TITLE == 'Cascade White 2') && move.named('Knock Off') && !resistedKnockOffDamage) {
         bpMods.push(6144);
         desc.moveBP = basePower * 1.5;
     }
@@ -758,7 +827,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         bpMods.push(6144);
         desc.attackerAbility = attacker.ability;
     }
-    else if (attacker.hasAbility('Tough Claws') && move.flags.contact) {
+    else if ((attacker.hasAbility('Tough Claws') && move.flags.contact) || (attacker.hasAbility('Amplifier') || move.flags.sound)) {
         bpMods.push(5325);
         desc.attackerAbility = attacker.ability;
     }
@@ -824,10 +893,28 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         desc.attackerAbility = attacker.ability;
     }
     var atMods = [];
+    
     if (defender.hasAbility('Thick Fat') && move.hasType('Fire', 'Ice')) {
         atMods.push(2048);
         desc.defenderAbility = defender.ability;
     }
+
+
+
+    if (TITLE == 'Cascade White 2') {
+        if (defender.hasAbility('Slush Rush') && move.hasType('Ice') || (defender.hasAbility('Swift Swim') && move.hasType('Water')) || (defender.hasAbility('Sand Force') && move.hasType('Rock')) || (defender.hasAbility('Sand Rush') && move.hasType('Rock')) || (defender.hasAbility('Toxic Boost') && move.hasType('Poison')) || (defender.hasAbility('Justified') && move.hasType('Dark')) || (defender.hasAbility('Ice Scales' && move.category == 'Special'))   ) {
+            atMods.push(2048);
+            desc.defenderAbility = defender.ability;
+        }
+
+        if ((attacker.hasAbility('Rivalry')) && (attacker.hasType(defender.types[0]) || attacker.hasType(defender.types[1]))) {
+            atMods.push(2744);
+            desc.rivalry = 'nerfed';
+        }
+
+    }
+
+
     if ((attacker.hasAbility('Guts') && attacker.status && move.category === 'Physical') ||
         (attacker.curHP() <= attacker.maxHP() / 3 &&
             ((attacker.hasAbility('Overgrow') && move.hasType('Grass')) ||
@@ -875,7 +962,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         (attacker.hasItem('Deep Sea Tooth') &&
             attacker.named('Clamperl') &&
             move.category === 'Special') ||
-        (attacker.hasItem('Light Ball') && attacker.name.startsWith('Pikachu') && !move.isZ)) {
+        (attacker.hasItem('Light Ball') && attacker.name.startsWith('Pikachu') && !move.isZ) ||   (attacker.hasItem('Light Ball') && attacker.name.startsWith('Eevee') && TITLE == 'Cascade White 2')) {
         atMods.push(8192);
         desc.attackerItem = attacker.item;
     }
@@ -1003,7 +1090,14 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         if (switchIn == 11) {
            baseDamage = Math.floor((0, util_2.OF32)(baseDamage * (1.5)));
         } else {
-           baseDamage = Math.floor((0, util_2.OF32)(baseDamage * (gen.num > 5 ? 1.5 : 2)));
+           
+            if (TITLE == 'Cascade White' && defender.hasAbility('Forewarn')) {
+                baseDamage = Math.floor((0, util_2.OF32)(baseDamage * (gen.num > 5 ? 1.25 : 1.75)));
+            } else {
+                baseDamage = Math.floor((0, util_2.OF32)(baseDamage * (gen.num > 5 ? 1.5 : 2)));
+            }
+
+           
         }
 
         desc.isCritical = isCritical;
@@ -1025,7 +1119,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
     var applyBurn = attacker.hasStatus('brn') &&
         move.category === 'Physical' &&
         !attacker.hasAbility('Guts') &&
-        !(move.named('Facade') && gen.num === 6);
+        !(move.named('Facade') && (gen.num === 6 || TITLE == 'Cascade White 2'))
     desc.isBurned = applyBurn;
     var finalMods = [];
     if (field.defenderSide.isReflect && move.category === 'Physical' && !isCritical) {

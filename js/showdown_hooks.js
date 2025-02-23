@@ -116,8 +116,6 @@ function sort_box_by_set(attr) {
         var an = mon1_data[attr],
             bn = mon2_data[attr];
      
-        
-
         if(an > bn) {
             return 1;
         }
@@ -145,8 +143,6 @@ function sort_box_by_dex(attr) {
         var an = mon1_data[attr],
             bn = mon2_data[attr];
      
-        
-
         if(an > bn) {
             return 1;
         }
@@ -1548,6 +1544,7 @@ $('#toggle-battle-notes').click(function(){
     $('.poke-import').first().toggle()
 })
 
+
 function get_next_in() {  
     
     if (switchIn == 4 && !partner_name) {
@@ -1577,11 +1574,15 @@ function get_next_in() {
     
     if (TITLE == "Cascade White 2") {
         var weather = $('#weather-bar').find('input:checked')[0].value
+        var item = $('#itemL1').val()
         var weathers = {"Sun": "Fire", "Hail": "Ice", "Sand": "Rock", "Rain": "Water"}
         var immunities = {"Dry Skin": "Water", "Flash Fire": "Fire", "Levitate": "Ground", "Sap Sipper": "Grass", "Motor Drive": "Electric", "Storm Drain": "Water", "Volt Absorb": "Electric", "Water Absorb": "Water"}
+        var type_change_abilities = {"Galvanize": "Electric", "Refrigerate": "Ice", "Normalize": "Normal", "Pixilate": "Fairy", "Aerilate": "Flying", "Liquid Voice": "Water"}
         var player_status = $("#statusL1").val()
         var player_hp = parseInt($("#p1").find(".percent-hp").val())
         var player_ability = $("#abilityL1").val()
+        var player_speed = parseInt($('.sp .total')[0].innerHTML)
+
     }
 
     if (player_type2 == ""){
@@ -1598,14 +1599,20 @@ function get_next_in() {
         var strongest_move_bp = 0
         var strongest_move = "None"
         var sub_index = trainer_poks[i].split(" (")[1].replace(")", "").split("[")[1].replace("]", "")
-        var types = pokedex[pok_name].types
+        var types = [player_type1, player_type2]
+
+        p2 = createPokemon(trainer_poks[i].slice(0,-3))
+        var speed = p2.rawStats.spe
+
+        console.log(p2)
 
 
 
         var pok_data = SETDEX_BW[pok_name][tr_name]
+        var bps = []
 
         for (j in pok_data["moves"]) {
-            var mov_data = moves[pok_data["moves"][j]]
+            var mov_data = { ...moves[pok_data["moves"][j]]}
 
             if (!mov_data) {
                 continue
@@ -1620,23 +1627,68 @@ function get_next_in() {
 
             
             if (TITLE == "Cascade White 2") {
+
+                const cleanString = (str) => str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
                 
-                if (pok_data["ability"] == "Technician" && mov_bp <= 60) {
-                    mov_bp = mov_bp * 1.5
+                
+                if (pok_data["moves"][j] == "Natural Gift") {
+                       mov_bp = 80
+                       var item_id = cleanString(pok_data["item"])
+
+                       if (ITEMS_BY_ID[8][item_id].naturalGift) {
+                            var ng_type = ITEMS_BY_ID[8][item_id].naturalGift["type"]
+                           mov_data["type"] = ng_type
+                       } else {
+
+                       }
                 }
 
-
-
-                if (types[0] == mov_data["type"] || types[1] == mov_data["type"]) {
-                    mov_bp = mov_bp * 1.5
+                if (pok_data["moves"][j] == "Weather Ball" && weather != "") {
+                    mov_bp = mov_bp * 2
+                    mov_data["type"] = weathers[weather]
                 }
+
+                if (type_change_abilities[pok_data["ability"]]) {
+                    if (pok_data["ability"] == "Liquid Voice") {
+                        if (mov_data.isSound) {
+                            mov_data["type"] = "Water"
+                            mov_bp = mov_bp * 1.3
+                        }
+                    } else {
+                        if (mov_data["type"] == "Normal") {
+                            mov_data["type"] = type_change_abilities[pok_data["ability"]]
+                            mov_bp = mov_bp * 1.3
+                            console.log(mov_bp)
+                        }
+                    }
+                }
+
 
                 if (pok_data["moves"][j] == "Acrobatics" && (pok_data["item"] == "-" || pok_data["item"] == "Flying Gem")) {
                     mov_bp = mov_bp * 2
                 }
 
+                if (["Avalanche", "Payback", "Revenge", "Gyro Ball"].includes(pok_data["moves"][j]) && (speed < player_speed)) {
+                    mov_bp = mov_bp * 2
+                }
+
+                if (pok_data["moves"][j] == "Knock Off" && (item != "")) {
+                    mov_bp = mov_bp * 2
+                }
+
+                if (types[0] == mov_data["type"] || types[1] == mov_data["type"]) {
+                    mov_bp = mov_bp * 1.5
+                }
+
+
+                if (pok_data["moves"][j] == "Electro Ball" && (speed > player_speed)) {
+                    mov_bp = mov_bp * 2
+                }
+
                 else if (player_status != "Healthy" && (pok_data["moves"][j] == "Hex" || pok_data["moves"][j] == "Barb Barrage" || pok_data["moves"][j] == "Infernal Parade" || pok_data["moves"][j] == "Beat Up")) {
                     mov_bp = mov_bp * 2
+                } else if (( (player_status == 'Poisoned' || player_status == "Badly Poisoned") && pok_data["moves"][j] == "Venoshock" )|| (pok_data["moves"][j] == "Retaliate")) {
+                   mov_bp = mov_bp * 2 
                 }
 
                 else if (player_status == "Asleep" && (pok_data["moves"][j] == "Dream Eater" || pok_data["moves"][j] == "Wake-Up Slap")) {
@@ -1647,16 +1699,28 @@ function get_next_in() {
                     mov_bp = mov_bp * 2
                 }
 
-                else if ((pok_data["moves"][j] == "Frost Breath" || pok_data["moves"][j] == "Storm Throw" || pok_data["moves"][j] == "Pay Day") && (!player_ability.includes(" Armor"))) {
-                    mov_bp = mov_bp * 2
+
+                if (pok_data["ability"] == "Technician" && mov_bp <= 60) {
+                    mov_bp = mov_bp * 1.5
                 }
 
-                else if (pok_data["moves"][j] == "Weather Ball" && weather != "") {
+                if ((pok_data["moves"][j] == "Frost Breath" || pok_data["moves"][j] == "Storm Throw" || pok_data["moves"][j] == "Pay Day") && (!player_ability.includes(" Armor"))) {
+                    
+                    if (pok_data["ability"] == "Sniper") {
+                        mov_bp = mov_bp * 1.5
+                    }
                     mov_bp = mov_bp * 2
-                    mov_data["type"] = weathers[weather]
                 }
                 else if (pok_data["moves"][j] == "Explosion" || pok_data["moves"][j] == "Self-Destruct") {
                     mov_bp = 0
+                }
+
+                if ( pok_data["moves"][j].includes("Solar ") && (weather != "Sun" && !["Solar Power", "Chlorophyll", "Flower Gift"].includes(pok_data["ability"])) ) {
+                    mov_bp = 0
+                }
+
+                if ( pok_data["moves"][j] == "Electro Shot" && (weather != "Rain" && pok_data["item"] != "Power Herb")) {
+                    mov_bp = mov_bp / 2
                 }
 
                 if (immunities[player_ability]) {
@@ -1674,26 +1738,35 @@ function get_next_in() {
                 if (mov_data.multihit) {
                     if (pok_data["ability"] == "Skill Link") {
                         mov_bp = mov_bp * mov_data.multihit[1]
-                    } else {
+                    } else if (pok_data["item"] == "Loaded Dice") {
+                        mov_bp = mov_bp * (mov_data.multihit[1] - 1)
+                    }
+                    else {
                          mov_bp = mov_bp * mov_data.multihit[0]
                     }
                 }
             }
 
-            if (TITLE == "Cascade White 2" && (player_ability == "Corrosion" || player_ability == "Scrappy")) {
-                type_info = get_type_info([player_type1, player_type2], player_ability)
+            if (TITLE == "Cascade White 2" && (pok_data["ability"] == "Corrosion" || pok_data["ability"] == "Scrappy" || pok_data["ability"] == "Inner Focus")) {
+                console.log(pok_data["ability"])
+                type_info = get_type_info([player_type1, player_type2], pok_data["ability"])
+            }
+
+            if (TITLE == "Cascade White 2" && (pok_data["moves"][j] == "Chip Away" || pok_data["moves"][j] == "Sacred Sword")) {
+                type_info = get_type_info([player_type1, player_type2], pok_data["moves"][j])
             }
 
             var bp = mov_bp * type_info[mov_data["type"]]
 
             
             if (TITLE == "Cascade White 2") {
+                console.log(types)
                 if ((pok_data["moves"][j] == "Freeze-Dry") && types.includes("Water") || (pok_data["moves"][j] == "Sky Uppercut") && types.includes("Flying")) {
                     bp = bp * 4
                 }
             }
             
-
+            bps.push(bp)
 
             if (bp > strongest_move_bp) {
                 strongest_move_bp = bp
@@ -1705,7 +1778,7 @@ function get_next_in() {
 
             }
         }
-        ranked_trainer_poks.push([trainer_poks[i], strongest_move_bp, strongest_move, sub_index, pok_data["moves"]])
+        ranked_trainer_poks.push([trainer_poks[i], strongest_move_bp, strongest_move, sub_index, pok_data["moves"], bps])
     }
 
     if ((typeof noSwitch != "undefined" && noSwitch == "1") || partner_name) {
@@ -1803,7 +1876,7 @@ function get_type_info(pok_types, move=false) {
 
     var result = {}
 
-    if (typeof final_type_chart !== 'undefined') {
+    if (typeof final_type_chart !== 'undefined' && !move) {
         var types = final_type_chart
 
     } else {
@@ -1839,9 +1912,14 @@ function get_type_info(pok_types, move=false) {
         if (move == "Corrosion") {
             types[7][16] = 2
         }
-        if (move == "Scrappy") {
+        if (move == "Scrappy" || move == "Chip Away" || move == "Sacred Sword") {
             types[0][13] = 1
             types[6][13] = 1
+        }
+
+        if (move == "Inner Focus") {
+            console.log("$$$$$$$$$$")
+            types[10][15] = 1
         }
     }
    
@@ -1942,7 +2020,7 @@ function loadDataSource(data) {
 	       MOVES_BY_ID[g][move_id].basePower = special_case_power_overrides[move]
 		}
         
-        var optional_move_params = ["type", "category", "e_id", "multihit", "target", "recoil", "overrideBP", "secondaries", "drain", "priority", "makesContact"]  
+        var optional_move_params = ["type", "category", "e_id", "multihit", "target", "recoil", "overrideBP", "secondaries", "drain", "priority", "makesContact", "willCrit"]  
         for (n in optional_move_params) {
             var param = optional_move_params[n]
             if (jsonMove[param]) {

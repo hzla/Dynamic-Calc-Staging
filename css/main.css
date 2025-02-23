@@ -800,7 +800,7 @@ table td {
 } 
 
 #p2 .no-switch-1 .bp-info{
-    font-size: 12px;
+    font-size: 8px;
 } 
 
 .evs.calc-trigger.expanded {
@@ -903,7 +903,7 @@ table td {
 #p2 .bp-info {
     text-align: center;
     white-space: nowrap;
-    font-size: 14px;
+    font-size: 8px;
 }
 
 #p1 .bp-info {

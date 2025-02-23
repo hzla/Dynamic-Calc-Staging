@@ -569,7 +569,7 @@ function refresh_next_in() {
 
 		var isLead = ""
 
-		console.log(next_poks[i][0])
+		console.log(next_poks[i])
 		if (next_poks[i][0].includes("[0]")) {
 			isLead = "lead"
 		}
@@ -589,10 +589,10 @@ function refresh_next_in() {
 
 		
 		pok +=`
-			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][0])}">${next_poks[i][4][0].replace("Hidden Power", "HP")}</div>
-			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][1])}">${next_poks[i][4][1].replace("Hidden Power", "HP")}</div>
-			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][2])}">${next_poks[i][4][2].replace("Hidden Power", "HP")}</div>
-			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][3])}">${next_poks[i][4][3].replace("Hidden Power", "HP")}</div>
+			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][0])}">${next_poks[i][4][0].replace("Hidden Power", "HP")} ${next_poks[i][5][0]}</div>
+			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][1])}">${next_poks[i][4][1].replace("Hidden Power", "HP")} ${next_poks[i][5][1]}</div>
+			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][2])}">${next_poks[i][4][2].replace("Hidden Power", "HP")} ${next_poks[i][5][2]}</div>
+			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][3])}">${next_poks[i][4][3].replace("Hidden Power", "HP")} ${next_poks[i][5][3]}</div>
 
 		</div>`
 		trpok_html += pok
