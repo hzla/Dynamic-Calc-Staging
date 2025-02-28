@@ -1625,6 +1625,7 @@ function get_next_in() {
                 mov_bp = 60
             }
 
+            var ability_mult = 1
             
             if (TITLE == "Cascade White 2") {
 
@@ -1723,16 +1724,20 @@ function get_next_in() {
                     mov_bp = mov_bp / 2
                 }
 
-                if (immunities[player_ability]) {
+                if (immunities[player_ability] && pok_data["ability"] != "Mold Breaker") {
                     if (mov_data["type"] == immunities[player_ability]) {
                         mov_bp = 0
                     }
                 }
 
-                if (player_ability == "Soundproof") {
-                    if (mov_data.isSound) {
+                if (pok_data["ability"] != "Mold Breaker") {
+                    if (player_ability == "Amplifier" && mov_data.isSound) {
                         mov_bp = 0   
-                    }
+                    } else if (player_ability == "Wind Rider" && mov_data.isWind) {
+                        mov_bp = 0   
+                    } else if (player_ability == "Bulletproof" && (mov_data.isBullet || mov_data.isPulse)) {
+                        mov_bp = 0   
+                    } 
                 }
 
                 if (mov_data.multihit) {
@@ -1745,27 +1750,46 @@ function get_next_in() {
                          mov_bp = mov_bp * mov_data.multihit[0]
                     }
                 }
-            }
 
-            if (TITLE == "Cascade White 2" && (pok_data["ability"] == "Corrosion" || pok_data["ability"] == "Scrappy" || pok_data["ability"] == "Inner Focus")) {
-                console.log(pok_data["ability"])
-                type_info = get_type_info([player_type1, player_type2], pok_data["ability"])
-            }
 
-            if (TITLE == "Cascade White 2" && (pok_data["moves"][j] == "Chip Away" || pok_data["moves"][j] == "Sacred Sword")) {
-                type_info = get_type_info([player_type1, player_type2], pok_data["moves"][j])
-            }
-
-            var bp = mov_bp * type_info[mov_data["type"]]
-
-            
-            if (TITLE == "Cascade White 2") {
-                console.log(types)
-                if ((pok_data["moves"][j] == "Freeze-Dry") && types.includes("Water") || (pok_data["moves"][j] == "Sky Uppercut") && types.includes("Flying")) {
-                    bp = bp * 4
+                if ((pok_data["ability"] == "Corrosion" || pok_data["ability"] == "Scrappy" || pok_data["ability"] == "Inner Focus")) {
+                    console.log(pok_data["ability"])
+                    type_info = get_type_info([player_type1, player_type2], pok_data["ability"])
                 }
+
+                if ((pok_data["moves"][j] == "Chip Away" || pok_data["moves"][j] == "Sacred Sword")) {
+                    type_info = get_type_info([player_type1, player_type2], pok_data["moves"][j])
+                }
+
+                if ((pok_data["moves"][j] == "Freeze-Dry") && types.includes("Water") || (pok_data["moves"][j] == "Sky Uppercut") && types.includes("Flying")) {
+                    mov_bp = mov_bp * 4
+                }
+
+                if (type_info[mov_data["type"]] < 1 && pok_data["ability"] == "Tenacity") {
+                    ability_mult = 2
+                } else if (player_ability == "Thick Fat" && (mov_data["type"] == "Fire" || mov_data["type"] == "Ice")) {
+                    ability_mult = 0.5
+                } else if (player_ability == "Heatproof" && mov_data["type"] == "Fire") {
+                    ability_mult = 0.25
+                } else if (player_ability == "Slush Rush" && mov_data["type"] == "Ice") {
+                    ability_mult = 0.5
+                } else if (player_ability == "Swift Swim" && mov_data["type"] == "Water") {
+                    ability_mult = 0.5
+                } else if ((player_ability == "Sand Force" || player_ability == "Sand Rush") && mov_data["type"] == "Rock") {
+                    ability_mult = 0.5
+                } else if (player_ability == "Justified" && mov_data["type"] == "Dark") {
+                    ability_mult = 0.5
+                } else if (player_ability == "Toxic Boost" && mov_data["type"] == "Poison") {
+                    ability_mult = 0.5
+                } else if (player_ability == "Dry Skin" && mov_data["type"] == "Fire") {
+                    ability_mult = 2
+                }
+
             }
-            
+
+            console.log(player_ability)
+
+            var bp = mov_bp * type_info[mov_data["type"]] * ability_mult            
             bps.push(bp)
 
             if (bp > strongest_move_bp) {
