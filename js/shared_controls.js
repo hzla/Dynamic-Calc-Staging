@@ -28,6 +28,7 @@ if (!Array.prototype.indexOf) {
 }
 
 boxSprites = ["newhd", "pokesprite"]
+fainted = []
 if (!localStorage.boxspriteindex) {
 localStorage.boxspriteindex = 1
 }
@@ -80,6 +81,10 @@ var bounds = {
 	"dvs": [0, 15],
 	"move-bp": [0, 65535]
 };
+
+if (damageGen == 1) {
+	bounds["evs"] = [0,65535]
+}
 for (var bounded in bounds) {
 	attachValidation(bounded, bounds[bounded][0], bounds[bounded][1]);
 }
@@ -418,7 +423,15 @@ $(".move-selector").change(function () {
 	if (m) {
 		var pokeObj = $(this).closest(".poke-info");
 		var pokemon = createPokemon(pokeObj);
-		var actual = calc.Stats.getHiddenPower(GENERATION, pokemon.ivs);
+
+		if ( TITLE.includes("Sterling") || TITLE.includes("Ancestral") || TITLE.includes("Maximum")) {
+			trueHP = false
+		} else {
+			trueHP = true
+		}
+
+		var actual = calc.Stats.getHiddenPower(GENERATION, pokemon.ivs, trueHP);
+		console.log(actual)
 		if (actual.type !== m[1]) {
 			var hpIVs = calc.Stats.getHiddenPowerIVs(GENERATION, m[1]);
 			if (hpIVs && gen < 7) {
@@ -502,14 +515,41 @@ function smogonAnalysis(pokemonName) {
 // auto-update set details on select
 
 function refresh_next_in() {
+	console.log("refreshing next in " + lastSetName)
 	var next_poks = get_next_in()
+
+	if (damageGen < 8 && !TITLE.includes("Lumi") && damageGen != 1) {
+        $("#p2 .evs, #p2 .ev-label").hide()
+
+    }
+
+    if (damageGen == 1) {
+    	$('.evs.calc-trigger').attr('max', '65535').addClass('expanded')
+    	$('.dvs.calc-trigger').removeAttr('disabled')
+    }
 
 	var trpok_html = ""
 	for (i in next_poks ) {
-		if (next_poks[i][0].includes($('input.opposing').val())){
+		
+
+		if (next_poks[i][0].includes($('input.opposing').val()) && noSwitch != "1"){
 			continue
 		}
 		var pok_name = next_poks[i][0].split(" (")[0].toLowerCase().replace(" ","-").replace(".","").replace("’","").replace(":","-")
+
+		if (pok_name.includes("galarian-")) {
+			pok_name = pok_name.split("galarian-")[1] +  "-galar"
+		}
+
+		if (pok_name.includes("hisuian-")) {
+			pok_name = pok_name.split("hisuian-")[1] +  "-hisui"
+		}
+
+		if ((pok_name).includes("alolan-")) {
+			pok_name = pok_name.split("alolan-")[1] +  "-alola"
+		}
+
+
 		var highlight = "hl-enabled"
 		if (switchIn == 0) {
 			highlight = "hl-disabled"
@@ -527,8 +567,15 @@ function refresh_next_in() {
 			isFainted = "fainted"
 		}
 
-		var pok = `<div class="trainer-pok-container">
-			<img class="trainer-pok right-side ${highlight} ${isFainted}" src="./img/${sprite_style}/${pok_name}.png" data-id="${dataID}">`
+		var isLead = ""
+
+		console.log(next_poks[i])
+		if (next_poks[i][0].includes("[0]")) {
+			isLead = "lead"
+		}
+
+		var pok = `<div class="trainer-pok-container no-switch-${noSwitch}">
+			<img class="trainer-pok right-side ${highlight} ${isFainted} ${isLead}" src="./img/${sprite_style}/${pok_name}.png" data-id="${dataID}">`
 
 
 		var species = next_poks[i][0].split(" (")[0]
@@ -542,20 +589,21 @@ function refresh_next_in() {
 
 		
 		pok +=`
-			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][0])}">${next_poks[i][4][0].replace("Hidden Power", "HP")}</div>
-			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][1])}">${next_poks[i][4][1].replace("Hidden Power", "HP")}</div>
-			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][2])}">${next_poks[i][4][2].replace("Hidden Power", "HP")}</div>
-			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][3])}">${next_poks[i][4][3].replace("Hidden Power", "HP")}</div>
+			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][0])}">${next_poks[i][4][0].replace("Hidden Power", "HP")} ${next_poks[i][5][0]}</div>
+			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][1])}">${next_poks[i][4][1].replace("Hidden Power", "HP")} ${next_poks[i][5][1]}</div>
+			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][2])}">${next_poks[i][4][2].replace("Hidden Power", "HP")} ${next_poks[i][5][2]}</div>
+			<div class="bp-info" data-strong="${next_poks[i][2].includes(next_poks[i][4][3])}">${next_poks[i][4][3].replace("Hidden Power", "HP")} ${next_poks[i][5][3]}</div>
 
 		</div>`
 		trpok_html += pok
 	}
 	$('.opposing.trainer-pok-list').html(trpok_html)
+
 }
 
 
-$('#p1 .boost, #statusL1, #p1 .percent-hp').change(function() {
-	refresh_next_in()
+$('#p1 .boost, #statusL1, #p1 .percent-hp').blur(function() {
+	refresh_next_in()	
 })
 
 
@@ -563,7 +611,6 @@ $(".set-selector").change(function () {
 	var fullSetName = $(this).val();
 	var pokemonName = fullSetName.substring(0, fullSetName.indexOf(" ("));
 	var setName = fullSetName.substring(fullSetName.indexOf("(") + 1, fullSetName.lastIndexOf(")"));
-
 
 	if ($(this).hasClass('opposing')) {
 		CURRENT_TRAINER_POKS = get_trainer_poks(fullSetName)
@@ -574,12 +621,9 @@ $(".set-selector").change(function () {
 		var right_max_hp = $("#p1 .max-hp").text()		
 		$("#p1 .current-hp").val(right_max_hp).change()
 	}
+	
 
-	refresh_next_in()
 
-	
-	
-	
 	if ($(this).hasClass('opposing')) {
 		if (SETDEX_BW && SETDEX_BW[pokemonName]) {
 			if (setName != "Blank Set") {
@@ -615,7 +659,7 @@ $(".set-selector").change(function () {
 					}
 				}
 
-				if (battle_type == "Singles" || battle_type == undefined || battle_type == "Rotation") {
+				if ((battle_type == "Singles" || battle_type == undefined || battle_type == "Rotation") && !partner_name) {
 					$('#singles-format').click()
 				} else {
 					$('#doubles-format').click()
@@ -644,15 +688,36 @@ $(".set-selector").change(function () {
 			$('#trainer-sprite').hide()
 		}
 		var pokesprite = pokemonName.toLowerCase().replace(" ", "-").replace(".","").replace("’","").replace(":","-")
+
+		if (pokesprite.includes("galarian-")) {
+			pokesprite = pokesprite.split("galarian-")[1] +  "-galar"
+		}
+
+		if (pokesprite.includes("hisuian-")) {
+			pokesprite = pokesprite.split("hisuian-")[1] +  "-hisui"
+		}
+
+		if ((pokesprite).includes("alolan-")) {
+			pokesprite = pokesprite.split("alolan-")[1] +  "-alola"
+		}
+
+
 		$('#p2 .poke-sprite').attr('src', `./img/${trainerSprites}/${pokesprite.replace("-glitched", "")}.${suffix}`)
 
+		if ($('#player-poks-filter:visible').length > 0) {
+	       box_rolls() 
+	    } 
 
 	} else {
 		if (SETDEX_BW) {
 			var pokesprite = pokemonName.toLowerCase().replace(" ", "-").replace(".","").replace("’","")
 			
 			$('#p1 .poke-sprite').attr('src', `./img/${playerSprites}/${pokesprite}.${suffix}`)
-			if (damageGen <= 5) {
+
+
+
+
+			if (damageGen <= 5 || TITLE.includes("Lumi")) {
 				$('#p1 .poke-sprite').addClass('no-flip')
 			}
 			if (TITLE == "Emerald Kaizo") {
@@ -671,7 +736,6 @@ $(".set-selector").change(function () {
 				if (current_tr_mon_level > caps[3]) {
 					$("#SpecL").prop("checked", true)
 				}
-
 			}
 		}
 	}
@@ -681,6 +745,7 @@ $(".set-selector").change(function () {
 	var pokemon = pokedex[pokemonName];
 
 
+	console.log(pokemon)
 
 
 	if (pokemon) {
@@ -735,8 +800,18 @@ $(".set-selector").change(function () {
 
 			pokeObj.find(".hp .evs").val((set.evs && set.evs.hp !== undefined) ? set.evs.hp : 0);
 			pokeObj.find(".hp .ivs").val((set.ivs && set.ivs.hp !== undefined) ? set.ivs.hp : 31);
+			
+
 			pokeObj.find(".hp .dvs").val((set.dvs && set.dvs.hp !== undefined) ? set.dvs.hp : 15);
+
+			if (damageGen == 1 ) {
+				pokeObj.find(".hp .dvs").val((set.ivs && set.ivs.hp !== undefined) ? set.ivs.hp : 15);
+			}
 			for (i = 0; i < LEGACY_STATS[gen].length; i++) {
+				
+
+
+
 				pokeObj.find("." + LEGACY_STATS[gen][i] + " .evs").val(
 					(set.evs && set.evs[LEGACY_STATS[gen][i]] !== undefined) ?
 						set.evs[LEGACY_STATS[gen][i]] : ($("#randoms").prop("checked") ? 84 : 0));
@@ -744,6 +819,15 @@ $(".set-selector").change(function () {
 					(set.ivs && set.ivs[LEGACY_STATS[gen][i]] !== undefined) ? set.ivs[LEGACY_STATS[gen][i]] : 31);
 				pokeObj.find("." + LEGACY_STATS[gen][i] + " .dvs").val(
 					(set.dvs && set.dvs[LEGACY_STATS[gen][i]] !== undefined) ? set.dvs[LEGACY_STATS[gen][i]] : 15);
+
+				if (damageGen == 1) {
+					LEGACY_STATS[gen][i] = LEGACY_STATS[gen][i].replace("sa", "sl")
+
+					pokeObj.find("." + LEGACY_STATS[gen][i] + " .dvs").val(
+					(set.ivs && set.ivs[LEGACY_STATS[gen][i]] !== undefined) ? set.ivs[LEGACY_STATS[gen][i]] : 15);
+				}
+
+
 			}
 			setSelectValueIfValid(pokeObj.find(".nature"), set.nature, "Hardy");
 			var abilityFallback = (typeof pokemon.abilities !== "undefined") ? pokemon.abilities[0] : "";
@@ -800,7 +884,7 @@ $(".set-selector").change(function () {
 		var formeObj = $(this).siblings().find(".forme").parent();
 		itemObj.prop("disabled", false);
 		var baseForme;
-		if (pokemon.baseSpecies && pokemon.baseSpecies !== pokemon.name) {
+		if (pokemon.baseSpecies && pokemon.baseSpecies !== pokemon.name && !TITLE.includes("Lumi")) {
 			baseForme = pokedex[pokemon.baseSpecies];
 		}
 		if (pokemon.otherFormes) {
@@ -819,6 +903,16 @@ $(".set-selector").change(function () {
 			pokeObj.find(".gender").val("");
 		} else pokeObj.find(".gender").parent().show();
 	}
+
+	// don't get new switch ins if set was the same
+	
+	if (fullSetName != lastSetName) {
+		refresh_next_in()
+	} else {
+		return
+	}
+	lastSetName = fullSetName
+	console.log("last set name set to: " + lastSetName)
 });
 
 function formatMovePool(moves) {
@@ -906,6 +1000,7 @@ $(".forme").change(function () {
 });
 
 function correctHiddenPower(pokemon) {
+	return pokemon
 	// After Gen 7 bottlecaps means you can have a HP without perfect IVs
 	if (gen >= 7 && pokemon.level >= 100) return pokemon;
 
@@ -918,7 +1013,7 @@ function correctHiddenPower(pokemon) {
 		if (iv !== 31) maxed = false;
 	}
 
-	var expected = calc.Stats.getHiddenPower(GENERATION, ivs);
+	var expected = calc.Stats.getHiddenPower(GENERATION, ivs, trueHP);
 	for (var i = 0; i < pokemon.moves.length; i++) {
 		var m = pokemon.moves[i].match(HIDDEN_POWER_REGEX);
 		if (!m) continue;
@@ -966,6 +1061,10 @@ function createPokemon(pokeInfo, customMoves=false, ignoreStatMods=false) {
 
 			ivs[stat] = (gen >= 3 && set.ivs && typeof set.ivs[legacyStat] !== "undefined") ? set.ivs[legacyStat] : 31;
 			evs[stat] = (set.evs && typeof set.evs[legacyStat] !== "undefined") ? set.evs[legacyStat] : 0;
+
+			if (damageGen == 1) {
+				evs[stat] = Math.floor(evs[stat] / 255 * 4)
+			}
 		}
 
 		var pokemonMoves = [];
@@ -1007,6 +1106,9 @@ function createPokemon(pokeInfo, customMoves=false, ignoreStatMods=false) {
 			
 			var species = pokedex[pokemonName];
 			name = (species.otherFormes || (species.baseSpecies && species.baseSpecies !== pokemonName)) ? pokeInfo.find(".forme").val() : pokemonName;
+			if (TITLE.includes("Lumi")) {
+				name = pokemonName
+			}
 		}
 
 
@@ -1028,6 +1130,9 @@ function createPokemon(pokeInfo, customMoves=false, ignoreStatMods=false) {
 				~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .base").val(pokedex['Rotom']['bs'][stat_abvs[stat]])
 				ivs[stat] = gen > 2 ? ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .ivs").val() : ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .dvs").val() * 2 + 1;
 				evs[stat] = ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .evs").val();
+				if (damageGen == 1) {
+					evs[stat] = Math.floor(evs[stat] / 255 * 4)
+				}
 				boosts[stat] = ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .boost").val();
 			}
 		} else {
@@ -1036,6 +1141,9 @@ function createPokemon(pokeInfo, customMoves=false, ignoreStatMods=false) {
 				baseStats[stat === 'spc' ? 'spa' : stat] = ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .base").val();
 				ivs[stat] = gen > 2 ? ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .ivs").val() : ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .dvs").val() * 2 + 1;
 				evs[stat] = ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .evs").val();
+				if (damageGen == 1) {
+					evs[stat] = Math.floor(evs[stat] / 255 * 4)
+				}
 				boosts[stat] = ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .boost").val();
 			}
 		}
@@ -1232,14 +1340,16 @@ function calcStat(poke, StatID) {
 	var base = ~~stat.find(".base").val();
 	var level = ~~poke.find(".level").val();
 	var nature, ivs, evs;
-	if (gen < 3) {
+	if (gen < 3 || damageGen < 3) {
 		ivs = ~~stat.find(".dvs").val() * 2;
-		evs = 252;
+		evs = Math.floor(~~stat.find(".evs").val() / 255 * 4);
 	} else {
 		ivs = ~~stat.find(".ivs").val();
 		evs = ~~stat.find(".evs").val();
 		if (StatID !== "hp") nature = poke.find(".nature").val();
 	}
+
+
 	// Shedinja still has 1 max HP during the effect even if its Dynamax Level is maxed (DaWoblefet)
 	var total = calc.calcStat(gen, legacyStatToStat(StatID), base, ivs, evs, level, nature);
 	if (gen > 7 && StatID === "hp" && poke.isDynamaxed && total !== 1) {
@@ -1734,7 +1844,7 @@ $(document).ready(function () {
    // }
     
 
-	if (damageGen <= 5 && switchIn < 10 && TITLE != "Platinum Redux 2.6") {
+	if (damageGen <= 5 && switchIn < 10 && TITLE != "Platinum Redux 2.6" || TITLE.includes("Lumi")) {
 		trainerSprites = "front"
 		playerSprites = "back"
 		suffix = "gif"

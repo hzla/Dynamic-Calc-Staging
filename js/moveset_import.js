@@ -1,4 +1,28 @@
 moveChanges = {
+	'Righteous Red': {
+	    "Razor Wind": "Air Slash",
+	    "Sky Attack": "Brave Bird",
+	    "Psywave": "Bug Buzz",
+	    "Fissure": "Bulldoze",
+	    "Egg Bomb": "Dark Pulse",
+	    "Sing": "Disarming Voice",
+	    "Mega Punch": "Drain Punch",
+	    "Horn Drill": "Drill Run",
+	    "Aurora Beam": "Flash Cannon",
+	    "Whirlwind": "Hurricane",
+	    "Mist": "Icy Wind",
+	    "Headbutt": "Iron Head",
+	    "Guillotine": "Metal Claw",
+	    "New": "Tmtrainer",
+	    "Sand Attack": "Mud Slap",
+	    "Thrash": "Outrage",
+	    "Spike Cannon": "Rock Blast",
+	    "Barrage": "Shadow Ball",
+	    "Sonicboom": "Spark",
+	    "Tail Whip": "Tail Slap",
+	    "Gust": "Twister",
+	    "Poison Gas": "Will-O-Wisp"
+	},
 	'Maximum Platinum': {
 		"Pound": "Hidden Power Grass",
 		"Payday": "Hidden Power Rock",
@@ -46,24 +70,102 @@ moveChanges = {
 
 
 	"Renegade Platinum": 
-		{"Barrage":     "Draining Kiss",
-		"Brine":        "Scald",
-		"Constrict":    "Icicle Crash",
-		"Horn Drill":   "Drill Run",
-		"Lunar Dance":  "Moonblast",
-		"Luster Purge": "Dazzling Gleam",
-		"Mist Ball":    "Disarming Voice",
-		"Sand Tomb":    "Bulldoze",
-		"Submission":   "Play Rough",
-		"Twister":      "Hurricane",
-		"Volt Tackle":  "Wild Charge"},
+		{
+			"Barrage":     "Draining Kiss",
+			"Brine":        "Scald",
+			"Constrict":    "Icicle Crash",
+			"Horn Drill":   "Drill Run",
+			"Lunar Dance":  "Moonblast",
+			"Luster Purge": "Dazzling Gleam",
+			"Mist Ball":    "Disarming Voice",
+			"Sand Tomb":    "Bulldoze",
+			"Submission":   "Play Rough",
+			"Twister":      "Hurricane",
+			"Volt Tackle":  "Wild Charge",
+			"HP Bug": "Hidden Power Bug",
+			"HP Dark": "Hidden Power Dark",
+			"HP Dragon": "Hidden Power Dragon",
+			"HP Electric": "Hidden Power Electric",
+			"HP Fighting": "Hidden Power Fighting",
+			"HP Fire": "Hidden Power Fire",
+			"HP Flying": "Hidden Power Flying",
+			"HP Ghost": "Hidden Power Ghost",
+			"HP Grass": "Hidden Power Grass",
+			"HP Ground": "Hidden Power Ground",
+			"HP Ice": "Hidden Power Ice",
+			"HP Normal": "Hidden Power Normal",
+			"HP Poison": "Hidden Power Poison",
+			"HP Psychic": "Hidden Power Psychic",
+			"HP Rock": "Hidden Power Rock",
+			"HP Steel": "Hidden Power Steel",
+			"HP Water": "Hidden Power Water",
+
+		},
 	
 	"Emerald Kaizo": 
 		{"Ancientpower":     "Ancient Power",
 		"X-scissor":        "X-Scissor",
 		"Faint Attack": "Feint Attack"},
 
-	"Sterling Silver": 
+	"Sterling Silver 1.14": 
+    {
+        "Defend Order": "HP Bug",
+        "Dark Void": "HP Dark",
+        "Twister": "HP Dragon",
+        "Thunder Shock": "HP Electric",
+        "Submission": "HP Fighting",
+        "Ember": "HP Fire",
+        "Feather Dance": "HP Flying",
+        "Astonish": "HP Ghost",
+        "Vine Whip": "HP Grass",
+        "Mud Sport": "HP Ground",
+        "Powder Snow": "HP Ice",
+        "Pound": "HP Normal",
+        "Sludge": "HP Poison",
+        "Psywave": "HP Psychic",
+        "Rock Throw": "HP Rock",
+        "Iron Defense": "HP Steel",
+        "Water Sport": "HP Water",
+        "Charge Beam": "Volt Switch",
+        "Gust": "Hurricane",
+        "Magnitude": "Bulldoze",
+        "Horn Drill": "Drill Run",
+        "Spider Web": "Electroweb",
+        "Slam": "Night Daze",
+        "Fury Swipes": "Dual Chop",
+        "Rollout": "Accelerock",
+        "Fissure": "Headlong Rush"
+    },
+    "Sterling Silver 1.15": 
+    {
+        "Defend Order": "HP Bug",
+        "Dark Void": "HP Dark",
+        "Twister": "HP Dragon",
+        "Thunder Shock": "HP Electric",
+        "Submission": "HP Fighting",
+        "Ember": "HP Fire",
+        "Feather Dance": "HP Flying",
+        "Astonish": "HP Ghost",
+        "Vine Whip": "HP Grass",
+        "Mud Sport": "HP Ground",
+        "Powder Snow": "HP Ice",
+        "Pound": "HP Normal",
+        "Sludge": "HP Poison",
+        "Psywave": "HP Psychic",
+        "Rock Throw": "HP Rock",
+        "Iron Defense": "HP Steel",
+        "Water Sport": "HP Water",
+        "Charge Beam": "Volt Switch",
+        "Gust": "Hurricane",
+        "Magnitude": "Bulldoze",
+        "Horn Drill": "Drill Run",
+        "Spider Web": "Electroweb",
+        "Slam": "Night Daze",
+        "Fury Swipes": "Dual Chop",
+        "Rollout": "Accelerock",
+        "Fissure": "Headlong Rush"
+    },
+    "Sterling Silver 1.16": 
     {
         "Defend Order": "HP Bug",
         "Dark Void": "HP Dark",
@@ -478,6 +580,9 @@ function statToLegacyStat(stat) {
 	case 'def':
 		return "df";
 	case 'spa':
+		if (damageGen == 1) {
+			return "sl";
+		}
 		return "sa";
 	case 'spd':
 		return "sd";
@@ -492,6 +597,7 @@ function getStats(currentPoke, rows, offset) {
 	var currentIV;
 	var currentAbility;
 	var currentNature;
+	var natureIsSet = false
 	currentPoke.level = 100;
 	for (var x = offset; x < offset + 8; x++) {
 		var currentRow = rows[x] ? rows[x].split(/[/:]/) : '';
@@ -525,15 +631,15 @@ function getStats(currentPoke, rows, offset) {
 		currentAbility = rows[x] ? rows[x].trim().split(":") : '';
 		if (currentAbility[0] == "Ability") {
 			currentPoke.ability = currentAbility[1].trim();
-			console.log(currentPoke.ability)
 			if (abilityChanges[TITLE] && abilityChanges[TITLE][currentPoke.ability]) {
 				currentPoke.ability = abilityChanges[TITLE][currentPoke.ability]
 			}
 		}
 
 		currentNature = rows[x] ? rows[x].trim().split(" ") : '';
-		if (currentNature[1] == "Nature") {
+		if (currentNature[1] == "Nature" && !natureIsSet) {
 			currentPoke.nature = currentNature[0];
+			natureIsSet = true
 		}
 	}
 	return currentPoke;
@@ -546,7 +652,6 @@ function isInt(value) {
 }
 
 function getItem(currentRow, j) {
-	console.log(currentRow)
 	for (;j < currentRow.length; j++) {
 		var item = currentRow[j].trim();
 		item = item.replace("’", "'");
@@ -575,6 +680,12 @@ function getMoves(currentPoke, rows, offset) {
 						console.log(`changed to ${move}`)
 					}
 				}
+
+				// ignore hacks with predefined hidden power
+				if (!TITLE.includes("Sterling") && !TITLE.includes("Maximum") && !TITLE.includes("Ancestral")) {
+					move = move.replace("HP ", "Hidden Power")
+				}
+
 				moves.push(move);
 			} else {
 				if (movesFound == true) {
@@ -711,7 +822,6 @@ function addSets(pokes, name) {
 				item = rows[i].split("@")[1].trim()
 			}
 			rows[i] = rows[i].split(" |Party")[0]
-			console.log(rows[i])
 			currentParty.push(rows[i])
 		}
 
@@ -824,17 +934,50 @@ function checkExeptions(poke) {
 		poke = "Florges";
 		break;
 	}
+
+	// try replacing spaces with dashes
+	if (typeof pokedex[poke] == 'undefined' && pokedex[poke.replace(" ", "-")]) {
+		poke = poke.replace(" ", "-")
+		return poke
+	}
+
+	// try replacing dashes with spaces
+	if (typeof pokedex[poke] == 'undefined' && pokedex[poke.replace("-", " ")]) {
+		poke = poke.replace("-", " ")
+		return poke
+	}
+
+	// try using only first part of name
+	if (typeof pokedex[poke] == 'undefined' && pokedex[poke.split("-")[0]]) {
+		poke = poke.split("-")[0]
+		return poke
+	}
+
+
 	return poke;
 
 }
 
 $("#clearSets").click(function () {
-	if (confirm("Are you sure you want to delete your custom sets and refresh the page? This action cannot be undone.")) {
-		localStorage.removeItem("customsets");
-		$("#importedSetsOptions").hide();
-		loadDefaultLists();
-		location.reload()
-	}
+	localStorage.removeItem("customsets");
+	$("#importedSetsOptions").hide();
+	
+	// Remove Set Data from Dropdown
+	$('.trainer-pok.left-side').each(function() {
+		var species_name = $(this).attr('data-id').replace(" (My Box)", "")
+		delete SETDEX_BW[species_name]["My Box"]
+	})
+
+	// Remove Icons
+	$('.trainer-pok.left-side').remove()
+	$('#clear-party').click()
+
+	// Shake box
+	$('.player-poks').addClass('shake')
+	setTimeout(function(){
+		$('.player-poks').removeClass('shake')
+	}, 500)
+
 });
 
 $("#importedSets").click(function () {

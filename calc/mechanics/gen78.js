@@ -1065,7 +1065,7 @@ function calculateFinalModsSMSS(gen, attacker, defender, move, field, desc, isCr
         finalMods.push(6144);
         desc.attackerAbility = attacker.ability;
     }
-    else if ((attacker.hasAbility('Tinted Lens') && typeEffectiveness < 1) ||
+    else if (( attacker.hasAbility('Tinted Lens') && typeEffectiveness < 1) ||
         (attacker.hasAbility('Bone Zone') && move.flags.bone && typeEffectiveness < 1)) {
         finalMods.push(8192);
         desc.attackerAbility = attacker.ability;

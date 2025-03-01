@@ -46,13 +46,13 @@
 }
 
 
-.mastersheet-wrapper #show-mid {
+/*.mastersheet-wrapper #show-mid {
     top:  252px;
 }
 
 .mastersheet-wrapper #show-ai {
     top:  287px;
-}
+}*/
 
 
 /**/
@@ -66,6 +66,42 @@
 .select2-container .select2-choice .select2-arrow {
     background: none;
     background-image: none;
+}
+
+html.old, body.old {
+    background: #282a36;
+}
+
+.old .wrapper{
+    max-width: calc(100vw - 40px);
+    min-width: 1540px;
+    margin: 0;
+    margin-left: 20px;
+    margin-right: 20px;
+    position: relative;
+}
+
+.old .panel:not(.panel-mid) {
+    max-width: calc(50vw - 255px);
+    min-width: calc(805px - 255px);
+}
+
+.old fieldset, .old .poke-info {
+    background: none;
+    
+}
+
+.old fieldset {
+    border: 1px solid #44475a;
+}
+
+.old .select2-container .select2-choice {
+    max-width: 100%;
+}
+
+.old #footer {
+    max-width: calc(100vw - 40px);
+    margin-left: 20px;
 }
 
 

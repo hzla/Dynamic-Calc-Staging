@@ -708,7 +708,25 @@ function getFinalSpeed(gen, pokemon, field, side) {
     return Math.max(1, speed);
 }
 exports.getFinalSpeed = getFinalSpeed;
-function getMoveEffectiveness(gen, move, type, isGhostRevealed, isGravity) {
+function getMoveEffectiveness(gen, move, type, isGhostRevealed, isGravity, isDarkRevealed=false) {
+    
+    if (TITLE == "Cascade White 2") {
+        if (move.named('Sky Uppercut') && type === 'Flying') {
+            return 2;
+        }
+
+        if ( (move.named('Sacred Sword') || move.named('Chip Away')) && type === 'Ghost') {
+            return 1;
+        }
+        if (isDarkRevealed && move.hasType('Psychic')) {
+            return 1;
+        }
+    }
+
+
+
+
+
     if (isGhostRevealed && type === 'Ghost' && move.hasType('Normal', 'Fighting')) {
         return 1;
     }
@@ -725,6 +743,11 @@ function getMoveEffectiveness(gen, move, type, isGhostRevealed, isGravity) {
     else {
         return gen.types.get((0, util_1.toID)(move.type)).effectiveness[type];
     }
+
+
+
+
+
 }
 exports.getMoveEffectiveness = getMoveEffectiveness;
 function checkAirLock(pokemon, field) {

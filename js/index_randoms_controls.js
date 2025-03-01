@@ -28,10 +28,15 @@ var damageResults;
 function performCalculations() {
 	var p1info = $("#p1");
 	var p2info = $("#p2");
+
+
 	var p1 = createPokemon(p1info);
 	var p2 = createPokemon(p2info);
 	var p1field = createField();
 	var p2field = p1field.clone().swap();
+
+
+
 
 
 
@@ -283,7 +288,13 @@ function calculateAllMoves(gen, p1, p1field, p2, p2field, displayProbabilities=t
 	checkStatBoost(p1, p2);
 	var results = [[], []];
 	for (var i = 0; i < 4; i++) {
-		p2.moves[i].category = moves[p2.moves[i].originalName]["category"]
+		if (p2.moves[i] == "(No Move)" || p2.moves[i].name == "Smokescreen") {
+			p2.moves[i].name = "Growl"
+			p2.moves[i].category = "Status"
+		} else {
+			p2.moves[i].category = moves[p2.moves[i].originalName]["category"]
+		}
+		
 		p2.moves[i].overrides = {}
 
 

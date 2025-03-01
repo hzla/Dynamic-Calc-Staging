@@ -26,6 +26,11 @@ function display(gen, attacker, defender, move, field, damage, rawDesc, notation
     var _a = __read((0, result_1.damageRange)(damage), 2), minDamage = _a[0], maxDamage = _a[1];
     var min = (typeof minDamage === 'number' ? minDamage : minDamage[0] + minDamage[1]) * move.hits;
     var max = (typeof maxDamage === 'number' ? maxDamage : maxDamage[0] + maxDamage[1]) * move.hits;
+
+
+
+
+
     var minDisplay = toDisplay(notation, min, defender.maxHP());
     var maxDisplay = toDisplay(notation, max, defender.maxHP());
     var desc = buildDescription(rawDesc, attacker, defender);
@@ -80,6 +85,7 @@ function getRecovery(gen, attacker, defender, move, damage, notation) {
     if (move.drain) {
         var percentHealed = move.drain[0] / move.drain[1];
         var max = Math.round(defender.maxHP() * percentHealed);
+        
         for (var i = 0; i < minD.length; i++) {
             var range = [minD[i], maxD[i]];
             for (var j in recovery) {
@@ -87,8 +93,10 @@ function getRecovery(gen, attacker, defender, move, damage, notation) {
                 if (attacker.hasItem('Big Root'))
                     if (TITLE == "Cascade White 2") {
                         drained = Math.trunc(drained * 7168 / 4096);
+                        max = Math.trunc(max * 7168 / 4096)
                     } else {
                        drained = Math.trunc(drained * 5324 / 4096); 
+                       max = Math.trunc(max * 5324 / 4096)
                     }                   
                 recovery[j] += Math.min(drained * move.hits, max);
             }

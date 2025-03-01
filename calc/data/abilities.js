@@ -216,6 +216,8 @@ var BW = DPP.concat([
     'Weak Armor',
     'Wonder Skin',
     'Zen Mode',
+    'Amplifier',
+    'Thunder Armor'
 ]);
 var XY = BW.concat([
     'Aerilate',

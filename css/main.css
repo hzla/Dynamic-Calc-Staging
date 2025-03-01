@@ -8,6 +8,19 @@ a img {
     
  }
 
+/* Hide scrollbars but keep scrolling functionality */
+* {
+    /* Firefox */
+    scrollbar-width: none;
+    
+    /* IE/Edge */
+    -ms-overflow-style: none;
+}
+
+/* Webkit browsers (Chrome, Safari, Opera) */
+*::-webkit-scrollbar {
+    display: none;
+}
 
 input[type="file"] {
   display: none;
@@ -95,7 +108,7 @@ input[type="file"] {
     z-index: 100;
     position: absolute;
     top: 70px;
-    background: #121212;
+    background: #181818;
     width: 160px;
     padding: 4px;
     display: none;
@@ -172,7 +185,10 @@ input[type="file"] {
 
 .bp-info {
     font-size: 14px;
+    min-height: 17px;
 }
+
+
 
 #ai-tags div {
     color: #bb86fc;
@@ -296,14 +312,17 @@ input[type="file"] {
 
 .opposing .select2-choice {
     padding-right: 30px;
+    max-width: 586px;
 }
 
 select {
     background: none;
-    border: 1px solid rgb(248, 248, 242);
+    border: 1px solid rgb(118, 118, 118);
     color: rgb(248, 248, 242);
     font-size: 16px;
 }
+
+optgroup {color: black;}
 
 .import-name-text {
     display: none;
@@ -311,6 +330,7 @@ select {
 
 option {
     color: black;
+    background: #f1f1f1;
 }
 .boost,.totalMod {
     margin-left: 4px;
@@ -323,7 +343,7 @@ input {
     padding: 2px;
     margin: 2px;
     background: none;
-    border: 1px solid rgb(248, 248, 242);
+    border: 1px solid rgb(118, 118, 118);
     color: rgb(248, 248, 242);
 }
 
@@ -334,18 +354,18 @@ input {
     padding-top: 10px;
     border-radius: 5px;
     transform: translateY(-16px);
-    background: #121212;
+    background: #181818;
     color: #f1f1f1;
     font-size: 18px;
 }
 
 .select2-results .select2-no-results {
-     background: #121212;
+     background: #181818;
 }
 
 .select2-drop-active {
-    border: 1px solid #f1f1f1;
-    border-top: 1px solid #f1f1f1;
+    border: 1px solid rgb(118,118,118);
+    border-top: 1px solid rgb(118,118,118);
 }
 
 .move-result-subgroup {
@@ -368,7 +388,7 @@ input {
     font-size: 15px;
 }
 
-#show-mid, #show-ai {
+#show-ai {
     position:  absolute;
     background: #bb86fc;
     height:  24px;
@@ -576,7 +596,7 @@ input {
 /* general page styling */
 html, body {
     font: 10pt Verdana, sans-serif;
-    background-color: #121212;
+    background-color: #181818;
     color: #f8f8f2;
     margin: 0;
     padding: 0;
@@ -620,7 +640,7 @@ table td {
 
 .trainer-pok-list.opposing {
     /*margin-top:  70px;*/
-    flex-wrap:  nowrap;
+/*    flex-wrap:  nowrap;*/
 }
 
 
@@ -630,7 +650,7 @@ table td {
 }
 
 .filterable .expanded-card-content {
-    background: #121212;
+    background: #181818;
 }
 
 .player-poks {
@@ -739,7 +759,7 @@ table td {
 }
 
 .faster {
-    box-shadow: inset 0 0 0 10px #f1fa8c;
+    box-shadow: inset 0 0 0 2px #f1fa8c;
 }
 
 .trainer-pok.left-side.killer {
@@ -747,14 +767,17 @@ table td {
 }
 
 .trainer-pok.left-side.defender {
-    background:  rgba(98, 114, 164, 1);
-    border: 10px solid rgba(98, 114, 164, 1);
-    border-radius: 50% 50% 50% 50% / 12% 12% 88% 88%;
+    background: rgba(98, 114, 164, 1);
+}
+
+#clear-filters {
+    cursor: pointer;
+    margin-left: 20px;
+    text-align: right;
 }
 
 .trainer-pok.left-side.killer.defender {
-    background:  rgba(255, 85, 85, 0.4);
-    border: 10px solid rgba(98, 114, 164, 1);
+    background: linear-gradient(to right, rgba(255, 85, 85, 0.4) 50%, rgba(98, 114, 164, 1) 50%);
 }
 
 .filter-desc {
@@ -767,14 +790,30 @@ table td {
 
 
 
+.no-switch-1.trainer-pok-container {
+    width: calc(16.66% - 12px);
+    padding: 0;
+}
+
+.no-switch-1 .bp-info[data-strong="true"] {
+    color: #f1f1f1;
+} 
+
+#p2 .no-switch-1 .bp-info{
+    font-size: 8px;
+} 
+
+.evs.calc-trigger.expanded {
+    width: 65px;
+}
 
 
 .trainer-pok {
-    height:  96px;
-    width:  96px;
+    height:  65px;
+    width:  65px;
     cursor: pointer;
     box-sizing: border-box;
-    border: 1px solid #121212;
+    border: 1px solid #181818;
     /*background: #6272a4;*/
     background: rgba(255,255,255,0.1);
     border-radius: 10px;
@@ -805,6 +844,11 @@ table td {
 
 .trainer-pok.right-side.fainted {
     background: rgb(255, 85, 85, 0.5);
+}
+
+.trainer-pok.right-side.lead {
+    border: 1px solid #bb86fc;
+    margin-bottom: 10px;
 }
 
 .left-side:hover {
@@ -840,7 +884,7 @@ table td {
 .info-group.info-selectors {
     position: absolute;
     right: 0;
-    top: 235px;
+    top: 240px;
     max-width: calc(100% - 390px);
 }
 
@@ -859,7 +903,11 @@ table td {
 #p2 .bp-info {
     text-align: center;
     white-space: nowrap;
-    font-size: 14px;
+    font-size: 8px;
+}
+
+#p1 .bp-info {
+    font-size: 12px;
 }
 
 .bp-info[data-strong="true"] {
@@ -906,11 +954,14 @@ table td {
 div.wrapper > div > span {
     padding-right: 5px;
 }
-fieldset {
+.poke-info, fieldset {
     float: left;
     border: 1px solid #44475a;
     position: relative;
     background: rgba(255,255,255,0.1);
+    min-inline-size: auto;
+    border-radius: 10px;
+    border: none;
 }
 legend {
     font-weight: bold;
@@ -1111,7 +1162,7 @@ th {
 }
 
 .move-result-group label {
-    background:  #121212;
+    background:  #181818;
     color: #f1f1f1;
 }
 .move-result-subgroup {
@@ -1183,7 +1234,7 @@ th {
 }
 
 .poke-info input, .poke-info select, textarea, .notes-text {
-    background: rgba(18,18,18,0.5);
+    background: rgba(24,24,24,0.8);
 }
 
 .info-group {
@@ -1227,12 +1278,12 @@ select.toxic-counter {
 .poke-info .crit-btn {
     font-size: 0.8em;
     width: 2.5em;
-    padding: 3px 3px;
+    padding: 1px;
     margin: 0px 1px;
     color: #f8f8f2;
     background: rgba(12,12,12,0.5);
     text-align: center;
-    border: 1px solid #f8f8f2;
+    border: 1px solid rgb(118, 118, 118);
 }
 .poke-info .z-btn {
     font-size: 0.8em;
@@ -1255,7 +1306,7 @@ select.toxic-counter {
     margin-top: 2px
 }
 
-.field-info button, #save-state, #read-save, #import, #clearSets {
+.field-info button, #save-state, #read-save, #import, #clearSets, #download-sav {
     color: #bb86fc;
     border-radius: 8px;
     background: none;
@@ -1266,6 +1317,15 @@ select.toxic-counter {
     border: 1px solid #bb86fc ;
 }
 
+#clearSets {
+    padding: 8px;
+    margin-top: 20px;
+
+}
+
+button:hover, label:hover {
+    background: rgba(0,0,0,0.1) !important;
+}
 #save-state {
 /*    border: 1px solid #bb86fc ;*/
 }
@@ -1281,11 +1341,21 @@ table.field {
 .select2-container .select2-choice > .select2-chosen {
     width: calc(100% - 20px);
     text-align: left;
+    border: 1px solid rgb(118,118,118);
+    border-radius: 5px;
+    background: rgba(24, 24, 24, 0.8);
 }
+
+.move-selector .select2-choice > .select2-chosen {
+    border: none;
+}
+
+
 .small-select.select2-container .select2-choice {
     font-size: 0.9em;
     height: 24px;
     line-height: 24px;
+    background: rgba(24,24,24,0.8);
 
 }
 .small-select.select2-container .select2-choice .select2-arrow b {
@@ -1300,19 +1370,21 @@ table.field {
     border:  1px solid #bb86fc;
     height: 37px;
     padding-left: 10px;
-    background: rgba(18,18,18,0.5);
+    background: rgba(24,24,24,0.8);
 }
+
+
 
 #p2 .select2-chosen {
     width: calc(100% + 10px);
 }
 
 .select2-search .input {
-    background:  #121212;
+    background:  #181818;
 }
 
 .move-selector {
-    border: 1px solid #f1f1f1;
+    border: 1px solid rgb(118,118,118);
 }
 
 .player .select2-arrow, .opposing .select2-arrow {
@@ -1340,14 +1412,17 @@ table.field {
     min-width: calc(805px - 255px);
 }
 
+
+
+
 .panel.panel-mid {
 /*    display: none;*/
     max-width: 450px;
+    width: 450px;
 }
 
 .poke-import {
-    min-width:  450px;
-    width:  450px;
+    min-width:  0px;
 }
 
 .panel-wrapper {
@@ -1443,7 +1518,7 @@ table.field {
 #footer {
     display: flex;
     justify-content: space-between;
-    max-width: 1730px;
+    max-width: 1680px;
     margin: 0 auto;
 }
 
@@ -1451,8 +1526,150 @@ table.field {
     margin-top: 0px;
 }
 
+.save-editor-guide {
+    color: #bb86fc;
+    font-size: 18px;
+    display: none;
+}
 
 
+
+@media (width <= 1540px) {
+  /* … */
+
+  .panel-wrapper {
+    justify-content: space-between;
+    min-width: 0px;
+  }
+
+  .move-selector {
+    width: 140px;
+  }
+
+  .move-type.calc-trigger {
+    width: 82px;
+  }
+
+  .poke-info {
+    width: 100%;
+  }
+
+  .panel {
+    width: calc(33vw - 2px);
+  }
+
+  .panel:not(.panel-mid), .poke-import {
+    min-width: 0px;
+  }
+
+  .poke-import {
+    width:  calc(100% - 5px);
+  }
+
+  .panel.third:not(.panel-mid) {
+    min-width: 0px;
+  }
+
+  .poke-sprite {
+    display: none;
+  }
+
+  .wrapper {
+    width: calc(100vw - 20px);
+    min-width: 0px;
+    margin: 0;
+    margin-left: 10px;
+  }
+
+  #show-ai {
+    display: none;
+  }
+  .header-settings{
+    min-width: 0px;
+  }
+
+  .calc-select {
+    width: 188px;
+  }
+
+  .info-group.info-selectors {
+    max-width: 264px;
+    position: initial;
+    justify-content: space-between;
+  }
+
+
+
+  #weather-bar > div {
+    width: initial !important;
+  }
+
+  .info-group.info-selectors > div{
+    display: flex;
+  }
+
+  .info-group.info-selectors label {
+    display: flex;
+    width: 92px;
+  }
+
+  .info-group.info-selectors select {
+    width: 172px;
+  }
+
+  .trainer-pok-container {
+    padding: 2px;
+    margin-left: 2px;
+    width: calc(33% - 6px);
+  }
+
+  #footer {
+    max-width: calc(100vw - 20px);
+    margin-left: 10px;
+  }
+
+  .panel.third:not(.panel-mid) {
+    flex-grow: 0;
+  }
+
+  .trainer-pok-list.opposing {
+/*    flex-wrap: wrap;*/
+  }
+
+}
+
+@media (width <= 1180px) {
+
+    .panel.third:not(.panel-mid):nth-child(3n) {
+        width: 310px;
+        min-width: 310px;
+    }
+
+    .panel.third:not(.panel-mid):first-child {
+        min-width: 360px;
+    }
+
+    .panel.panel-mid {
+        min-width: 384px;
+        margin-left: 5px;
+    }
+
+    .btn-xwide {
+        width: 91px;
+    }
+
+    .btn-wide {
+        width: 80px;
+    }
+
+    .field-info .btn {
+        margin-bottom: 10px;
+    }
+
+    .move-result-group .btn  {
+        min-width: 200px;
+    }
+}
 
 
 

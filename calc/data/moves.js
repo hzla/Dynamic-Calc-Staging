@@ -1110,7 +1110,8 @@ var DPP_PATCH = {
         type: 'Fighting',
         makesContact: true,
         isPunch: true,
-        category: 'Physical'
+        category: 'Physical',
+        secondaries: false
     },
     'Ice Fang': {
         bp: 65,
@@ -2974,6 +2975,13 @@ var SM_PATCH = {
         category: 'Special',
         secondaries: true,
         zp: 140
+    },
+    "Seething Cold": {
+        bp: 60,
+        type: 'Ice',
+        category: 'Special',
+        secondaries: true,
+        zp: 140
     }
 };
 var SM = (0, util_1.extend)(true, {}, XY, SM_PATCH);
@@ -3964,7 +3972,7 @@ var SS_PATCH = {
     'Gunk Shot': { maxPower: 95 },
     Gust: { maxPower: 90 },
     'Gyro Ball': { maxPower: 130 },
-    'Hammer Arm': { maxPower: 90 },
+    'Hammer Arm': { maxPower: 90, secondaries: false },
     Headbutt: { maxPower: 120 },
     'Head Charge': { maxPower: 140 },
     'Head Smash': { maxPower: 150 },
