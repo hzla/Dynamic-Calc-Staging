@@ -286,7 +286,7 @@ if (damageGen != 8 && damageGen != 7) {
     exports.checkIntimidate = checkIntimidate;
     function checkDownload(source, target, wonderRoomActive) {
         var _a;
-        if (source.hasAbility('Download')) {
+        if (source.hasAbility('Download') && source.abilityOn) {
             var def = target.stats.def;
             var spd = target.stats.spd;
             if (wonderRoomActive)
@@ -527,7 +527,7 @@ if (damageGen != 8 && damageGen != 7) {
         if (move.named('Seismic Toss', 'Night Shade')) {
             return attacker.level;
         }
-        else if (move.named('Dragon Rage')) {
+        else if (move.named('Dragon Rage') && !TITLE.includes("Pokemon Colors")) {
             return 40;
         }
         else if (move.named('Sonic Boom')) {

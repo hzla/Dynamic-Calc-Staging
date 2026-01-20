@@ -50,7 +50,7 @@ function performCalculations() {
 	p2.maxDamages = [];
 	
 
-	if ($('#SpeL').prop('checked')) {
+	if ($('#SpeL').prop('checked') && damageGen == 3) {
 		p1.stats.spe = Math.floor(p1.stats.spe * 1.1)
 		p1info.find(".sp .totalMod").css('color', '#bd93f9')
 	} else {
@@ -118,6 +118,10 @@ function performCalculations() {
 
 		if (["Avalanche", "Payback", "Assurance", "Revenge", "Retaliate", "Stomping Tantrum"].indexOf(p2.moves[i].name) != -1) {
 			$(resultLocations[1][i].damage).text($(resultLocations[1][i].damage).text()+ " (can double power)");
+		}
+
+		if (["Counter", "Mirror Coat", "Destiny Bond"].indexOf(p2.moves[i].name) != -1) {
+			$(resultLocations[1][i].damage).text($(resultLocations[1][i].damage).text()+ " (variable dmg)");
 		}
 
 
@@ -304,7 +308,7 @@ function calculateAllMoves(gen, p1, p1field, p2, p2field, displayProbabilities=t
 
 	}
 	if (displayProbabilities) {
-
+		mostRecentDisplayedResults = results
 		moveProbabilities = calculate_probabilities(results[1])
 	}
 	return results;

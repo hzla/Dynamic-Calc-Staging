@@ -120,6 +120,16 @@ function calculateBWXY(gen, attacker, defender, move, field) {
     var type2Effectiveness = defender.types[1]
         ? (0, util_2.getMoveEffectiveness)(gen, move, defender.types[1], isGhostRevealed, field.isGravity)
         : 1;
+    if (field.isInverseBattle || defender.hasAbility("Inverted Scales")) {
+        if (type1Effectiveness === 0 || type1Effectiveness === 0.5)
+            type1Effectiveness = 2;
+        else if (type1Effectiveness === 2)
+            type1Effectiveness = 0.5;
+        if (type2Effectiveness === 0 || type2Effectiveness === 0.5)
+            type2Effectiveness = 2;
+        else if (type2Effectiveness === 2)
+            type2Effectiveness = 0.5;
+    }
     var typeEffectiveness = type1Effectiveness * type2Effectiveness;
     var resistedKnockOffDamage = !defender.item ||
         (defender.named('Giratina-Origin') && defender.hasItem('Griseous Orb')) ||
@@ -655,7 +665,7 @@ function calculateBWXY(gen, attacker, defender, move, field) {
         bpMods.push(4915);
         desc.attackerAbility = attacker.ability;
     }
-    if (defender.hasAbility('Toxic Boost') && move.hasType('Poison')) {
+    if (defender.hasAbility('Toxic Boost') && move.hasType('Poison') && TITLE == "Cascade White 2") {
         bpMods.push(2048);
         desc.defenderAbility = defender.ability;
     }

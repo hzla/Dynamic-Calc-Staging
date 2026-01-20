@@ -6,8 +6,9 @@
     <meta name="color-scheme" content="dark">
     <title>Dynamic Calc</title>
     <link type="text/css" rel="stylesheet" href="./js/vendor/select2/select2.css?01" />
-    <link type="text/css" rel="stylesheet" href="./css/main.css?2f51c9702" />
-    <link type="text/css" rel="stylesheet" href="./css/encounters.css?2f51c971" />
+    <link type="text/css" rel="stylesheet" href="./css/main.css?2f51c969f" />
+    <link type="text/css" rel="stylesheet" href="./css/encounters.css?2f51c970" />
+    <link type="text/css" rel="stylesheet" href="./css/settings-ui.css?2f51c970" />
     <link type="text/css" rel="stylesheet" href="./css/vendor/bootstrap.css?1" />
     <!-- Global site tag (gtag.js) - Google Analytics -->    
     <script>
@@ -37,6 +38,7 @@
        "8f199f3f40194ecc4b8e": "Sterling Silver 1.14",
        "7ea3ff9a608c1963a0a5": "Sterling Silver 1.15",
        "b819708dba8f8c0641d5": "Sterling Silver 1.16",
+       "ster117": "Sterling Silver 1.17",
        "5b789b0056c18c5c668b": "Platinum Redux 2.6",
        "de22f896c09fceb0b273": "Maximum Platinum",
        "eae4ac1396d4b82d8b87": "Pitch Black 2",
@@ -53,7 +55,9 @@
        "17af2cc6ec56f8f293bd": "Parallel Emerald Hard",
        "a0e5b4fa06d9e7762210": "Parallel Emerald Normal",
        "e91164d90d06a009e6cc": "Radical Red 4.1 Hardcore",
-       "ced457ba9aa55731616c": "Radical Red 4.1 Normal"
+       "ced457ba9aa55731616c": "Radical Red 4.1 Normal",
+       "0d8b65ba6796bf2b3d4c": "White 2 Kaizo",
+       "vwplus": "Vintage White Plus"
    }
         // https://hzla.github.io/Dynamic-Calc-Decomps/?data=e91164d90d06a009e6cc&dmgGen=8&gen=8&types=6&noSwitch=1
         if (SOURCES[params.get('data')]) {
@@ -108,13 +112,52 @@
         <img src="./img/menu.svg" id="open-menu">
 
         <div id="settings-menu">
-            <div id="img-toggle" class="menu-item">Backup Mode</div>
-            <div id="sprite-toggle" class="menu-item">Toggle Sprite Icons</div>
-            <div id="toggle-boxroll" class="menu-item">Toggle Box Filter</div>
-            <div id="toggle-battle-notes" class="menu-item">Toggle Battle Notes</div>
-            <div id="show-mid" class="menu-item">Toggle Field/Import</div>
-            <div id="theme-toggle" class="menu-item">Toggle Layout</div>
-            <div id="ms-btn" class="menu-item">Mastersheet Mode</div>
+            <div id="sprite-toggle" class="menu-item">
+              <div class="menu-label">
+                Showdown Sprites
+              </div> 
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div id="toggle-boxroll" class="menu-item">
+              <div class="menu-label">
+                Box Filters
+              </div> 
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+              </label>
+            </div>
+             <div id="toggle-battle-notes" class="menu-item">
+              <div class="menu-label">
+                Battle Notes
+              </div> 
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div id="show-mid" class="menu-item">
+              <div class="menu-label">
+                Field/Import
+              </div> 
+              <label class="switch">
+                <input type="checkbox" checked="true">
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div id="theme-toggle" class="menu-item">
+              <div class="menu-label">
+                Use New Layout
+              </div> 
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div id="ms-btn" class="menu-item">Go to Mastersheet</div>
         </div>
 
         <span class="title-text">
@@ -143,15 +186,15 @@
                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=11c4eeca5a94f8edf413&gen=8&challengeMode=true&types=6">Blaze Black 2 Redux Challenge Mode</option>
                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=945a33720dbd6bc04488&gen=8&types=6">Blaze Black 2 Redux 1.4</option>
                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=945a33720dbd6bc04488&gen=8&challengeMode=true&types=6">Blaze Black 2 Redux Challenge Mode 1.4</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=55d895a19083b26c0c53&dmgGen=8&gen=8&types=6&noSwitch=1&evs=0">Emerald Imperium 1.2 No EVs</option>
-                 <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=55d895a19083b26c0c53&dmgGen=8&gen=8&types=6&noSwitch=1&evs=1">Emerald Imperium 1.2 w/ EVs</option>
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=24bbfc0e69ff4a5c006b&dmgGen=3&gen=8&switchIn=11&types=3">Emerald Kaizo</option>
+                <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=imp13&dmgGen=8&gen=8&types=6&evs=0">Emerald Imperium 1.3 No EVs</option>
+                 <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=imp13&dmgGen=8&gen=8&types=6&evs=1">Emerald Imperium 1.3 w/ EVs</option>
+                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=24bbfc0e69ff4a5c006b&dmgGen=3&gen=8&noSwitch=1&types=3">Emerald Kaizo</option>
                  <option data-source="https://hzla.github.io/Dynamic-Calc/?data=8d1ab90a3b3c494d8485&dmgGen=6&gen=6">Eternal X/Wilting Y Insanity Rebalanced</option>  
                  <option data-source="https://hzla.github.io/Dynamic-Calc/?data=9abb79df1e356642c229&dmgGen=3&gen=3&noSwitch=1&types=3">Fire Red Omega</option>  
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=68bfb2ccba14b7f6b1f0&gen=8&types=6&dmgGen=8&switchIn=11">Inclement Emerald</option>   
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=6875151cfa5eea00eafa&gen=8&types=6&dmgGen=8&switchIn=11">Inclement Emerald No EVs</option>  
+                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=68bfb2ccba14b7f6b1f0&gen=8&types=6&dmgGen=8&noSwitch=1">Inclement Emerald</option>   
+                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=6875151cfa5eea00eafa&gen=8&types=6&dmgGen=8&noSwitch=1">Inclement Emerald No EVs</option>  
 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=e9030beba9c1ba8804e8&dmgGen=3&gen=8&switchIn=11&misc=Orre&types=5">Kaizo Colloseum</option>
+                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=e9030beba9c1ba8804e8&dmgGen=3&gen=8&noSwitch=1&misc=Orre&types=5">Kaizo Colloseum</option>
                  <option data-source="https://hzla.github.io/Dynamic-Calc/?data=006ac04e900ccb3110df&dmgGen=8&gen=8&switchIn=6&types=6">Luminescent Platinum</option>  
                  <option data-source="https://hzla.github.io/Dynamic-Calc/?data=9fd7b1ba4583a9ba7166&dmgGen=8&gen=8&noSwitch=1&types=6&customPoks=1">Mariomon</option> 
                  <option data-source="https://hzla.github.io/Dynamic-Calc/?data=de22f896c09fceb0b273&gen=8&switchIn=4&types=5&dmgGen=4">Maximum Platinum</option> 
@@ -169,9 +212,10 @@
                  
                  <option data-source="https://hzla.github.io/Dynamic-Calc/?data=03e577af7cc9856a1f42&gen=7&switchIn=4&types=4&dmgGen=4">Sacred Gold/Storm Silver No Fairy</option> 
                  <option data-source="https://hzla.github.io/Dynamic-Calc/?data=03e577af7cc9856a1f42&gen=7&switchIn=4&types=6&dmgGen=4&fairy=1">Sacred Gold/Storm Silver Fairy Patch</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=b819708dba8f8c0641d5&dmgGen=4&gen=7&switchIn=4&types=5">Sterling Silver 1.16</option>  
+                 <option data-source="https://hzla.github.io/Dynamic-Calc/index.html?customPoks=1&data=ster117&dmgGen=4&gen=7&switchIn=4&types=5">Sterling Silver 1.17</option>  
                  <option data-source="https://hzla.github.io/Dynamic-Calc-Unbound/?data=68bfb2ccba14b7f6b1f0&gen=8&types=6&dmgGen=8&switchIn=11&m=insane">Unbound 2.1.1</option> 
                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=da1eedc0e39ea07b75bf&gen=5&types=5">Vintage White</option>
+                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=vwplus&gen=5&types=5">Vintage White Plus</option>
                 
             </optgroup>
             
@@ -259,10 +303,20 @@
     <div class="panel-wrapper">
     <div aria-label="Pok&eacute;mon 1" class="panel third" role="region">
         <div id="player-tags">
-            <div id="learnset-show">Learnset</div>
-            <div id="save-pok">Save</div>
-            <div id="add-party-pok">Add to Party</div>
-            <div id="box-remove">Remove</div>
+            <div id="tags-left">
+              <div id="learnset-show">Learnset</div>
+              <div id="save-pok">Save</div>
+              <div id="add-party-pok">Add to Party</div>
+              <div id="box-remove">Remove</div>
+            </div>
+
+            <div id="tags-right">
+              <div id="met-loc">Met:</div>
+              <div id="frag-count">Frags:</div>
+            </div>
+
+            
+
         </div>
         <div id="learnset-container">
             <h2>Level Up Moves</h2>
@@ -642,6 +696,8 @@
             <div hidden id="criticalHitInstruction">Force this attack to be a critical hit?</div>
             <div hidden id="zMoveInstruction">Make this attack a Z-move?</div>
 
+
+
             <div class="trainer-poks ">
 
                 <div class="trainer-pok-list player-party">
@@ -651,26 +707,7 @@
                 <div id="edge">Edge</div>
             </div>
 
-           
-
-           
-
-             <div id="player-poks-filter">
-                <div class="filter-row">
-                    <div class="filter-desc" id="min-dealt-label">Search Minimum % Dealt: </div>
-                    <input id="min-dealt"/>
-                </div>
-
-                <div class="filter-row">
-                    <div class="filter-desc" id="max-taken-label">Search Maximum % Taken: </div>
-                    <input id="max-taken"/>
-                </div>
-                <div class="filter-row">
-                    <div class="filter-desc" id="faster-label">Faster</div>
-                    <div id="clear-filters">Clear</div>
-                </div>
-            </div>
-
+          
             <div class="move1">
                 <select class="move-selector calc-trigger small-select"></select>
                 <input class="move-bp calc-trigger" value="50" />
@@ -792,6 +829,12 @@
                 </select>
             </div>
 
+
+            <div id="search-row">
+              <div id="search-label">Search:</div>
+              <input type="text" id="search-box" placeholder="Name, move, ability, item, etc."></input>
+            </div>
+
             <div class="trainer-poks ">
 
                 <div class="trainer-pok-list player-poks">
@@ -799,7 +842,59 @@
                 </div>
 
             </div>
-            
+
+             <div id="player-poks-filter">
+                <div class="filter-row">
+                    <div class="filter-desc" id="min-dealt-label">Search Minimum % Dealt: </div>
+                    <input id="min-dealt"/>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-desc" id="max-taken-label">Search Maximum % Taken: </div>
+                    <input id="max-taken"/>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-desc" id="filter-move-label">Against: </div>
+                    <select id="filter-move">
+                      <option value="All Moves">All Moves</option>
+                  </select>
+                </div>
+
+
+                <div class="filter-row">
+                    <div class="filter-desc" id="faster-label">Faster</div>
+                    <div id="clear-filters">Clear</div>
+                </div>
+
+                <br>
+                <div class="filter-row">
+                    <div class="filter-desc">Default Colors (off when searching %s)</div>
+                    <label class="switch">
+                      <input type="checkbox" id="adv-boxrolls" checked="true">
+                      <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-desc" id="ohko-label">Ohkos</div>
+                </div>
+
+
+                <div class="filter-row">
+                    <div class="filter-desc" id="mb-ohko-label">Might Ohko</div>
+                </div>
+
+
+                <div class="filter-row">
+                    <div class="filter-desc" id="ohkod-label">Is Ohkod</div>
+                </div>
+
+
+                <div class="filter-row">
+                    <div class="filter-desc" id="mb-ohkod-label">Might be Ohkod</div>
+                </div>
+            </div>            
         </fieldset>
     </div>
 
@@ -835,6 +930,8 @@
                         <label class="btn btn-small btn-mid" for="sand">Sand</label>
                         <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Hail" id="hail" />
                         <label class="btn btn-small btn-right" for="hail">Hail</label>
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Snow" id="snow" />
+                        <label class="btn btn-small btn-right" for="snow" style="display:none;">Snow</label>
                     </div>
                     <div class="gen-specific g5 g6 g7 g8 g9" style="width: 22.2em; margin: 5px auto; display: inline-block;">
                         <span hidden id="magicRoomInstruction">Is Magic Room in effect?</span>
@@ -1068,48 +1165,48 @@
                                 <label class="btn btn-xxwide" for="helpingHandR">Helping Hand</label>
                             </div></td>
                         </tr>
-                        <tr class="gen-specific g3">
+                        <tr class="gen-specific g3 badge-boost">
                             <td><div class="left" title="Has this Pokémon's power been boosted by Roxxane badge?">
                                 <div hidden="" id="selectAtkBadgeInstruction">Has this Pokémon's power been boosted by Roxxane badge?</div>
                                 <input aria-describedby="selectAtkBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="AtkL">
-                                <label class="btn btn-xxwide" for="AtkL">Attack Boost</label>
+                                <label class="btn btn-xxwide " for="AtkL">Attack Boost</label>
                             </div></td>
                             <td><div class="right" title="Has this Pokémon's power been boosted by Roxxane badge?">
                                 <input aria-describedby="selectAtkBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="AtkR">
-                                <label class="btn btn-xxwide" for="AtkR">Attack Boost</label>
+                                <label class="btn btn-xxwide " for="AtkR">Attack Boost</label>
                             </div></td>
                         </tr>
-                        <tr class="gen-specific g3">
+                        <tr class="gen-specific g3 badge-boost">
                             <td><div class="left" title="Has this Pokémon's power been boosted by Wattsons badge?">
                                 <div hidden="" id="selectSpeedBadgeInstruction">Has this Pokémon's power been boosted by Wattsons badge?</div>
                                 <input aria-describedby="selectSpeedBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="SpeL">
-                                <label class="btn btn-xxwide" for="SpeL">Speed Boost</label>
+                                <label class="btn btn-xxwide " for="SpeL">Speed Boost</label>
                             </div></td>
                             <td><div class="right" title="Has this Pokémon's power been boosted by Wattsons badge?">
                                 <input aria-describedby="selectAtkBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="SpeR">
-                                <label class="btn btn-xxwide" for="SpeR">Speed Boost</label>
+                                <label class="btn btn-xxwide " for="SpeR">Speed Boost</label>
                             </div></td>
                         </tr>
-                        <tr class="gen-specific g3">
-                            <td><div class="left" title="Has this Pokémon's power been boosted by Tate and Lizas Badge?">
-                                <div hidden="" id="SelectSpecBadgeInstruction">Has this Pokémon's power been boosted by Tate and Lizas Badge?</div>
-                                <input aria-describedby="SelectSpecBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="SpecL">
-                                <label class="btn btn-xxwide" for="SpecL">Special Boost</label>
-                            </div></td>
-                            <td><div class="right" title="Has this Pokémon's power been boosted by Tate and Lizas Badge?">
-                                <input aria-describedby="SelectSpecBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="SpecR">
-                                <label class="btn btn-xxwide" for="SpecR">Special Boost</label>
-                            </div></td>
-                        </tr>
-                        <tr class="gen-specific g3">
+                        <tr class="gen-specific g3 badge-boost">
                             <td><div class="left" title="Has this Pokémon's power been boosted by Normans Badge?">
                                 <div hidden="" id="SelectSpecBadgeInstruction">Has this Pokémon's power been boosted by Brawlys Badge?</div>
                                 <input aria-describedby="SelectDefBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="DefL">
-                                <label class="btn btn-xxwide" for="DefL">Defense Boost</label>
+                                <label class="btn btn-xxwide " for="DefL">Defense Boost</label>
                             </div></td>
                             <td><div class="right" title="Has this Pokémon's power been boosted by Normans Badge?">
                                 <input aria-describedby="SelectDefBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="DefR">
-                                <label class="btn btn-xxwide" for="DefR">Defense Boost</label>
+                                <label class="btn btn-xxwide " for="DefR">Defense Boost</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g3 badge-boost">
+                            <td><div class="left" title="Has this Pokémon's power been boosted by Tate and Lizas Badge?">
+                                <div hidden="" id="SelectSpecBadgeInstruction">Has this Pokémon's power been boosted by Tate and Lizas Badge?</div>
+                                <input aria-describedby="SelectSpecBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="SpecL">
+                                <label class="btn btn-xxwide " for="SpecL">Special Boost</label>
+                            </div></td>
+                            <td><div class="right" title="Has this Pokémon's power been boosted by Tate and Lizas Badge?">
+                                <input aria-describedby="SelectSpecBadgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="SpecR">
+                                <label class="btn btn-xxwide " for="SpecR">Special Boost</label>
                             </div></td>
                         </tr>
 
@@ -1231,17 +1328,17 @@
                 <div id="import-1_wrapper" class="dataTables_wrapper no-footer">
                     <form class="import-team">
                         <input class="import-name-text" value="My Box"></input>
-                        <textarea class="import-team-text" placeholder="Export your box and party using Pkhex/Save File"></textarea>
+                        <textarea class="import-team-text" placeholder="Import your box and party from save file/pkhex to see fragsheet, click mon sprites to mark kills"></textarea>
                         <!--<button style='position:absolute' class='bs-btn bs-btn-default'>Import</button>-->
                     </form>
-                    <label for="save-upload" class="bs-btn" id="read-save">
+                    <label for="save-upload-g45" class="bs-btn" id="read-save">
                             Read .sav
                     </label>
-                    <input id="save-upload" type="file" />
+                    <input id="save-upload-g45" type="file"/>
                 </div>
                 <span class="importedSetsOptions" style="width:auto;">
                     <button id="clearSets">Clear Imported Sets</button>
-                    <button id="fragsheet-howto">Fragsheet (New)</button>
+                    <button id="fragsheet-howto">View Fragsheet</button>
                 </span>
             </fieldset>
 
@@ -1287,6 +1384,7 @@
                 <div>
                     <label for="levelR1">Level</label>
                     <input class="level calc-trigger" id="levelR1" value="100" />
+                    <div id="redux-lvl">Wrong Lvl?</div>
                 </div>
                 <div class="hide">
                     <label for="weightR1">Weight (kg)</label>
@@ -1781,8 +1879,9 @@
     </script>
     
 
-     <script type="text/javascript" src="./backups/title_to_backup_mappings.js?0"></script>
+     <script type="text/javascript" src="./backups/title_to_backup_mappings.js?4"></script>
 
+    <script type="text/javascript" src="./js/console_watcher.js?8fa0c7fc"></script>
     <script type="text/javascript" src="./js/expert_ai.js?8fa0c7fc"></script>
     <script type="text/javascript" src="./calc/util.js?8fa0c7fe"></script>
     <script type="text/javascript" src="./calc/stats.js?da4066fa"></script>
@@ -1792,15 +1891,21 @@
     <script type="text/javascript" src="./js/data/sets/gen6.js?2219279f"></script>
 
 
-    <script type="text/javascript" src="./js/data/sets/gen4.js?57f6a824"></script>
-    <script type="text/javascript" src="./js/data/sets/gen3.js?13854f5b"></script>
+    <script type="text/javascript" src="./js/data/sets/gen4.js?57f6a825"></script>
+    <script type="text/javascript" src="./js/data/sets/gen3.js?13854f5e"></script>
     <script type="text/javascript" src="./js/data/sets/gen2.js?4cb8be40"></script>
     <script type="text/javascript" src="./js/data/sets/gen1.js?a2f6e086"></script>
-    <script type="text/javascript" src="./js/showdown_hooks.js?100176"></script>
-    <script type="text/javascript" src="./js/battle_notes.js?100160"></script>
+    <script type="text/javascript" src="./js/rom_specific_configs.js?100196"></script>
+    <script type="text/javascript" src="./js/switch_prediction.js?100197"></script>
+    <script type="text/javascript" src="./js/showdown_hooks.js?100193"></script>
+    <script type="text/javascript" src="./js/battle_notes.js?100161"></script>
+    <script type="text/javascript" src="./js/balance_testing.js?100000"></script>
+<!--     <script type="text/javascript" src="./js/move_choice_ai/basic.js?100000"></script> -->
 
-    <script type="text/javascript" src="./js/enums.js?100132"></script>
-    <script type="text/javascript" src="./js/savereader.js?100143"></script>
+    <script type="text/javascript" src="./js/enums.js?100135"></script>
+
+    <script type="text/javascript" src="./js/savereader.js?100148"></script>
+    <script type="text/javascript" src="./js/savereader_pokeemerald.js?100150"></script>
 
     <script type="text/javascript" src="./calc/data/types.js?b935c17c"></script>
     <script type="text/javascript" src="./calc/data/evos.js?b935c17c"></script>
@@ -1815,9 +1920,9 @@
     <script type="text/javascript" src="./calc/pokemon.js?59377ee4"></script>
     <script type="text/javascript" src="./calc/field.js?51ae3fda"></script>
     <script type="text/javascript" src="./calc/items.js?6c1bfef0"></script>
-    <script type="text/javascript" src="./calc/mechanics/util.js?13c1ef47"></script>
+    <script type="text/javascript" src="./calc/mechanics/util.js?13c1ef49"></script>
     <script type="text/javascript" src="./calc/mechanics/gen78.js?b5cb13cc"></script>
-    <script type="text/javascript" src="./calc/mechanics/gen56.js?326e578f"></script>
+    <script type="text/javascript" src="./calc/mechanics/gen56.js?326e5780"></script>
     <script type="text/javascript" src="./calc/mechanics/gen4.js?7d2b7681"></script>
     <script type="text/javascript" src="./calc/mechanics/gen3.js?2fa3d6a2"></script>
     <script type="text/javascript" src="./calc/mechanics/gen12.js?468bc07c"></script>
@@ -1826,10 +1931,11 @@
     <script type="text/javascript" src="./calc/result.js?d5c7552c"></script>
     <script type="text/javascript" src="./calc/adaptable.js?afeb3759"></script>
     <script type="text/javascript" src="./calc/index.js?2377cbc8"></script>
-    <script type="text/javascript" src="./js/shared_controls.js?0b3ea090"></script>
-    <script type="text/javascript" src="./js/index_randoms_controls.js?3375d6fc"></script>
-    <script type="text/javascript" src="./js/moveset_import.js?a707190"></script>
-    <script type="text/javascript" src="./js/frags.js?100000"></script>
+
+    <script type="text/javascript" src="./js/shared_controls.js?0b3ea09a"></script>
+    <script type="text/javascript" src="./js/index_randoms_controls.js?3375d6fe"></script>
+    <script type="text/javascript" src="./js/moveset_import.js?a707186"></script>
+    <script type="text/javascript" src="./js/frags.js?100009"></script>
 </div>
 
 
@@ -1853,7 +1959,7 @@
     </div>
 
     <div class="shortcut-info">
-        <h3 class="footer-title">Shortcuts/Info</h3>
+        <h3 class="footer-title">Shortcuts/ Info</h3>
         alt + b: "B"edtime presleep full party if gen 4 save is uploaded
         <br><br>
         alt + c: "C"ritical hits

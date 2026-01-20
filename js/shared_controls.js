@@ -236,7 +236,7 @@ $(".ability").bind("keyup change", function () {
 
 	var ability = $(this).closest(".poke-info").find(".ability").val();
 
-	var TOGGLE_ABILITIES = ['Flash Fire', 'Intimidate', 'Minus', 'Plus', 'Slow Start', 'Unburden', 'Stakeout'];
+	var TOGGLE_ABILITIES = ['Flash Fire', 'Intimidate', 'Minus', 'Plus', 'Slow Start', 'Unburden', 'Stakeout', 'Download'];
 
 	if (TOGGLE_ABILITIES.indexOf(ability) >= 0) {
 		$(this).closest(".poke-info").find(".abilityToggle").show();
@@ -514,7 +514,6 @@ function smogonAnalysis(pokemonName) {
 // auto-update set details on select
 
 function refresh_next_in() {
-	console.log("refreshing next in " + lastSetName)
 	var next_poks = get_next_in()
 
 	if (damageGen < 7 && !TITLE.includes("Lumi") && damageGen != 1) {
@@ -573,7 +572,7 @@ function refresh_next_in() {
 		}
 
 		var pok = `<div class="trainer-pok-container no-switch-${noSwitch}">
-			<img class="trainer-pok right-side ${highlight} ${isFainted} ${isLead}" src="./img/${sprite_style}/${pok_name}.png" data-id="${dataID}">`
+			<img class="trainer-pok right-side ${highlight} ${isFainted} ${isLead}" src="./img/${sprite_style}/${pok_name.replace("sn-s", "sion").replace(/-s$/, "")}.png" data-id="${dataID}">`
 
 
 		var species = next_poks[i][0].split(" (")[0]
@@ -615,6 +614,8 @@ $(".set-selector").change(function () {
 		var sprite = SETDEX_BW
 		var left_max_hp = $("#p2 .max-hp").text()
 		$("#p2 .current-hp").val(left_max_hp).change()
+
+
 	} else {
 		var right_max_hp = $("#p1 .max-hp").text()		
 		$("#p1 .current-hp").val(right_max_hp).change()
@@ -665,9 +666,17 @@ $(".set-selector").change(function () {
 					$('#doubles-format').click()
 				}
 
+				let enemy_moves = SETDEX_BW[pokemonName][setName].moves
+
+				$('#filter-move').html(`<option value="All Moves">All Moves</option>`)
+				
+				for (move of enemy_moves) {
+					$('#filter-move').append(`<option value="${move}">${move}</option>`)
+				}
 
 
-				if (misc == "Orre") {
+
+				if (misc == "Orre" || partner_name) {
 					$('#doubles-format').click()
 				}
 				// $('#trainer-sprite').attr('src', `./img/${sprite}`)
@@ -702,7 +711,7 @@ $(".set-selector").change(function () {
 		}
 
 
-		$('#p2 .poke-sprite').attr('src', `./img/${trainerSprites}/${pokesprite.replace("-glitched", "")}.${suffix}`)
+		$('#p2 .poke-sprite').attr('src', `./img/${trainerSprites}/${pokesprite.replace("-glitched", "").replace(/-S$/, "").replace("sn-s", "sion")}.${suffix}`)
 
 		if ($('#player-poks-filter:visible').length > 0) {
 	       box_rolls() 
@@ -1295,6 +1304,14 @@ function createField() {
 	var isBadgeDef = [$("#DefL").prop("checked"), $("#DefR").prop("checked")];
 	var isBadgeSpeed = [$("#SpeL").prop("checked"), $("#SpeR").prop("checked")];
 
+	// guard against any misclicks
+	if (damageGen > 3) {
+		isBadgeAtk = [false, false]
+		isBadgeSpec = [false, false]
+		isBadgeDef = [false, false]
+		isBadgeSpeed = [false, false]
+	}
+
 	var createSide = function (i) {
 		return new calc.Side({
 			spikes: spikes[i], isSR: isSR[i], steelsurge: steelsurge[i], 
@@ -1420,7 +1437,6 @@ $(".gen").change(function () {
 
 	if (!DEFAULTS_LOADED) {
 		pokedex = calc.SPECIES[gen];
-		console.log("loading defaults")
 		setdex = SETDEX[gen];
 		if (TITLE == "Ancestral X")
 			moves = calc.MOVES[6];
@@ -1855,13 +1871,19 @@ $(document).ready(function () {
 	$("#percentage").prop("checked", true);
 	$("#percentage").change();
 	loadDefaultLists();
-	$(".move-selector").select2({
+
+	try {
+		$(".move-selector").select2({
 		dropdownAutoWidth: true,
 		matcher: function (term, text) {
 			// 2nd condition is for Hidden Power
 			return text.toUpperCase().indexOf(term.toUpperCase()) === 0 || text.toUpperCase().indexOf(" " + term.toUpperCase()) >= 0;
 		}
 	});
+	} catch {
+		console.log("Select2 Error supressed")
+	}
+	
 	$(".terrain-trigger").bind("change keyup", getTerrainEffects);
 	
 

@@ -1,6 +1,7 @@
 backupFiles = {
 	"Blaze Black/Volt White": "bb",
 	"Blaze Black 2/Volt White 2 Original": "bb2",
+	"Blaze Black 2/Volt White 2 Redux 1.4": "bb2redux1-4",
 	"Vintage White": "vw",
 	"Renegade Platinum": "rp",
 	"Sacred Gold/Storm Silver": "sgss",
@@ -13,7 +14,7 @@ backupFiles = {
 	"Black 2/White 2": "bw2",
 	"Eternal X/Wilting Y Insanity Rebalanced": "exwy",
 	"Inclement Emerald": "inc",
-	"Inclement Emerald No EVs": "inc",
+	"Inclement Emerald No EVs": "inc-noev",
 	"Sterling Silver 1.16": "ster",
 	"Cascade White 2": "casc",
 	"Photonic Sun/Prismatic Moon": "pspm",
@@ -21,7 +22,14 @@ backupFiles = {
 	"Fire Red Omega": "fro",
 	"Fire Red": "fr",
 	"Emerald": "em",
-	"Luminescent Platinum": "lumi"
+	"Luminescent Platinum": "lumi",
+	"White 2 Kaizo": "w2k",
+	"Royal Saphire": "roysaph",
+	"Garbage Gold Deluxe": "garbgold",
+	"Azure Platinum": "azure",
+	"Sterling Silver 1.17": "ster117",
+	"Rose Gold": "rg",
+	"Vintage White Plus": "vwplus"
 }
 
 

@@ -10,28 +10,65 @@ function importEncounters() {
 	} else {
 		currentEncounters = {}
 	}
-	for (const [speciesName, setData] of Object.entries(customSets)) {
+	for (let [speciesName, setData] of Object.entries(customSets)) {
 		
 	  // add to encounters if doesn't exist
-	  if (!currentEncounters[speciesName]) {
+	  if (!currentEncounters[speciesName] && setData["My Box"]) {
 		// console.log(currentEncounters)s
-	  	let encounter = {setData: setData, fragCount: 0, frags: [], prevoFragCount: 0, alive: true, hide: false}
+	  	  	
+	  	// delete setData["My Box"].moves
+	  	// delete setData["My Box"].isCustomSet
+	  	// delete setData["My Box"].level
+
+
+	  	let encounter = {setData: setData, fragCount: 0, frags: [], prevoFragCount: 0, alive: true}
 	  	currentEncounters[speciesName] = encounter
 
-	  	let preFrags = prevoFrags(speciesName, currentEncounters)
+	  	let preFrags = prevoData(speciesName, currentEncounters)
 	
 	  	encounter.prevoFragCount = preFrags[0]
-	  	encounter.fragCount = preFrags[0]
 
+
+	  	encounter.fragCount = preFrags[0]
 	  	encounter.frags = preFrags[1]
+
+
+
+	  	if (preFrags[2]) {
+	  		encounter.setData["My Box"].met = preFrags[2]
+	  	}
+
+	  	if (preFrags[3]) {
+	  		encounter.setData["My Box"].nn = preFrags[3]
+	  	}	  	
 	  } 
 	}
 	localStorage.encounters = JSON.stringify(currentEncounters)  	
 	return currentEncounters
 }
 
+function watchLocalStorageProperty(propertyName, callback) {
+  window.addEventListener('storage', (event) => {
+    // The storage event only fires when localStorage is changed in OTHER tabs/windows
+    if (event.key === propertyName) {
+      callback({
+        key: event.key,
+        oldValue: event.oldValue,
+        newValue: event.newValue,
+        url: event.url
+      });
+    }
+  });
+}
+
 function getEncounters() {
-	return JSON.parse(localStorage.encounters)
+	if (localStorage.encounters && localStorage.encounters != "" ) {
+		return JSON.parse(localStorage.encounters)
+	} else {
+		return {}
+	}
+
+	
 }
 
 function resetEncounters() {
@@ -42,10 +79,29 @@ function resetEncounters() {
 	console.log("Encounters cleared")
 }
 
+function extractLevel(str) {
+    const match = str.match(/Lvl (-?\d+)/);
+    return match ? match[1] : null;
+}
+
 function addFrag(e) {
 	e.preventDefault()
 	let speciesName = $('.select2-chosen')[0].innerHTML.split(" (")[0]
 	let fragged =  $('.select2-chosen')[5].innerHTML
+
+
+	const internalLevel = extractLevel(fragged)
+	let actualLevel = $('#levelL1').val()
+
+	if (parseInt(actualLevel) <= 0) {
+		actualLevel = $('#levelL1').val() || "1"
+	}
+
+	fragged = fragged.replace(internalLevel, actualLevel);
+
+
+
+
 	let currentEncounters = JSON.parse(localStorage.encounters)
 
 	if (currentEncounters[speciesName] && currentEncounters[speciesName].frags.indexOf(fragged) == -1 ) {
@@ -54,6 +110,8 @@ function addFrag(e) {
 		localStorage.encounters = JSON.stringify(currentEncounters)
 
 		$('#p2 .frag-text').show()
+
+		$('#frag-count').text(`Frags: ${currentEncounters[speciesName].fragCount}`)
 
 		setTimeout(function() {
 			$('#p2 .frag-text').hide()
@@ -66,6 +124,8 @@ function addFrag(e) {
 		localStorage.encounters = JSON.stringify(currentEncounters)
 
 		$('#p2 .unfrag-text').show()
+
+		$('#frag-count').text(`Frags: ${currentEncounters[speciesName].fragCount}`)
 
 		setTimeout(function() {
 			$('#p2 .unfrag-text').hide()
@@ -106,28 +166,27 @@ function toggleEncounterStatus(e) {
 	console.log(`${speciesName} marked as alive: ${currentEncounters[speciesName].alive}`)
 }
 
-// Returns [fragCount, frags]
-function prevoFrags(speciesName, encounters) {
-	let ancestor = evoData[speciesName]["anc"]
 
-	if (ancestor == speciesName) {
-		console.log("Does not evolve")
-		return [0, []]
-	}
 
-	let evos = evoData[ancestor]["evos"]
+// Returns [fragCount, frags, met location, nickname]
+function prevoData(speciesName, encounters) {
+    let ancestor = evoData[speciesName]["anc"]
 
-	// Look for later evolutions first
-	for (let i = evos.length - 1; i >= 0; i--) {
-	    mon = evos[i]
-	    if (encounters[mon] && mon != speciesName) {
-			console.log(mon)
-			return [encounters[mon].fragCount, encounters[mon].frags]
-		}
-	}
+    if (ancestor == speciesName) {
+        return [0, [], false, false]
+    }
 
-	console.log("prevo data not found")
-	return [0, []]
+    let evos = [ancestor].concat(evoData[ancestor]["evos"])
+
+
+    // Look for later evolutions first
+    for (let i = evos.length - 1; i >= 0; i--) {
+        mon = evos[i]
+        if (encounters[mon] && mon != speciesName) {
+            return [encounters[mon].fragCount, encounters[mon].frags, encounters[mon].setData["My Box"].met, encounters[mon].setData["My Box"].nn]
+        }
+    }
+    return [0, [], false, false]
 }
 
 
@@ -145,6 +204,20 @@ $(document).ready(function(){
 		}
 		window.open(url, '_blank');
 	})
+
+	watchLocalStorageProperty('customsets', (data) => {
+	  console.log("Customsets Updated, refreshing table")
+
+	  customSets = JSON.parse(localStorage.customsets)
+
+	  delete SETDEX_BW[localStorage.toDelete]['My Box']
+
+            // $(`[data-id='${$('.set-selector')[0].value}']`).remove()
+
+	  get_box()
+      box_rolls()
+	});
+
 })
 
 

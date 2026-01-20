@@ -177,8 +177,14 @@ function calculateADV(gen, attacker, defender, move, field) {
             df = Math.floor(df * 1.1);
         }
     }
+
     if (!attacker.hasItem('Sea Incense') && move.hasType((0, items_1.getItemBoostType)(attacker.item))) {
-        at = Math.floor(at * 1.1);
+        
+        if (TITLE.includes("Pokemon Colors")) {
+            at = Math.floor(at * 1.2);
+        } else {
+            at = Math.floor(at * 1.1);
+        }
         desc.attackerItem = attacker.item;
     }
     else if (attacker.hasItem('Sea Incense') && move.hasType('Water')) {
@@ -227,8 +233,8 @@ function calculateADV(gen, attacker, defender, move, field) {
         bp = Math.floor(bp * 1.5);
         desc.attackerAbility = attacker.ability;
     }
-    if (move.named('Explosion', 'Self-Destruct', 'Misty Explosion')) {
-        console.log("asdf")
+    if (move.named('Explosion', 'Self-Destruct', 'Misty Explosion') && !TITLE.includes("Pokemon Colors")) {
+        
         df = Math.floor(df / 2);
     }
     var isCritical = move.isCrit && !defender.hasAbility('Battle Armor', 'Shell Armor');
@@ -263,7 +269,7 @@ function calculateADV(gen, attacker, defender, move, field) {
         baseDamage = Math.floor(baseDamage * 2);
         desc.isSwitching = 'out';
     }
-    if (field.gameType !== 'Singles' && move.target === 'allAdjacentFoes') {
+    if (field.gameType !== 'Singles' && (move.target === 'allAdjacentFoes')) {
         if (gen >= 4) {
             baseDamage = Math.floor(baseDamage * 0.75);
             console.log("0.75 not half")

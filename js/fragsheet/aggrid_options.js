@@ -1,6 +1,6 @@
 params = new URLSearchParams(window.location.search);
 SOURCES = {
-    "9aa37533b7c000992d92": "Blaze Black/Volt White",
+   "9aa37533b7c000992d92": "Blaze Black/Volt White",
    "04770c9a89687b02a9f5": "Blaze Black 2/Volt White 2 Original",
    "945a33720dbd6bc04488": "Blaze Black 2/Volt White 2 Redux 1.4",
    "da1eedc0e39ea07b75bf": "Vintage White",
@@ -39,7 +39,8 @@ SOURCES = {
    "9fd7b1ba4583a9ba7166": "Mariomon",
    "b60bd402cbb993ed3b77": "Parallel Emerald ATO",
     "17af2cc6ec56f8f293bd": "Parallel Emerald Hard",
-    "a0e5b4fa06d9e7762210": "Parallel Emerald Normal"
+    "a0e5b4fa06d9e7762210": "Parallel Emerald Normal",
+    "ster117": "Sterling Silver 1.17" 
 }
 
 function initializeSplits() {
@@ -121,6 +122,9 @@ watchLocalStorageProperty('encounters', (data) => {
   refreshTables();
 });
 
+
+
+
 function setColumnDefs() {
     // Column definitions
     columnDefs = [
@@ -151,7 +155,7 @@ function setColumnDefs() {
             width: 80,
             cellRenderer: (params) => {
               if (params.data.species) {
-                return `<img src="./img/pokesprite/${params.data.species.toLowerCase().replace(/[ :]/g, '-').replace(/[.']/g, '')}.png" style="width: 60px; height: 60px; object-fit: cover;margin-top: 10px;" />`;
+                return `<img src="./img/pokesprite/${params.data.species.toLowerCase().replace(/[ :]/g, '-').replace(/[.’]/g, '')}.png" style="width: 60px; height: 60px; object-fit: cover;margin-top: 10px;" />`;
               }
               return '';
             },
@@ -183,6 +187,10 @@ function setColumnDefs() {
             cellEditor: 'agTextCellEditor',
             onCellValueChanged: (event) => {
                 updateEncounterSetData('met', event.data.species, event.newValue);
+            },
+            valueFormatter: (params) => toTitleCase(params.value),
+            cellStyle: params => {
+                return { 'text-overflow': 'initial' };
             },
         },
         {
@@ -348,13 +356,17 @@ function displayFragHistory(rowData) {
 
         for (const frag of fragList) {
             let trName = extractTrainerName(frag)
+
+
             
             let pokName = extractPokemonName(frag)
-            let spritePath = `./img/pokesprite/${pokName.toLowerCase().replace(/[ :]/g, '-').replace(/[.']/g, '').replace("-glitched", "")}.png`
+            let spritePath = `./img/pokesprite/${pokName.toLowerCase().replace(/[ :'.-]+/g, '-').replace(/^-|-glitched$|-$/g, '')}.png`
+            let typing = splitData[TITLE]["types"][i]
+
 
             if (!seenTrainers[trName]) {
                 let fragHTML = `<div class="frag-row">
-                                    <div class="fragged-tr"><div class="tr-name">${trName}</div> <div class="tr-split">${splitTitles[i]} Split</div></div>
+                                    <div class="fragged-tr ${typing}-type"><div class="tr-name">${trName}</div> <div class="tr-split">${splitTitles[i]} Split</div></div>
                                     <div class="fragged-mons" data-tr="${trName}"><img src="${spritePath}"></div>
                                 </div>`
 
@@ -379,7 +391,8 @@ function extractLevel(str) {
 
 function extractTrainerName(str) {
     // Find "Lvl " followed by numbers, then capture everything after it until the closing parenthesis
-    const match = str.match(/Lvl \d+\s+(.+?)\s*\)/);
+    console.log(str)
+    const match = str.match(/Lvl -?\d+\s+(.+?)\s*\)/);
     return match ? match[1].trim() : null;
 }
 
@@ -387,6 +400,17 @@ function extractPokemonName(str) {
     // Match everything before the opening parenthesis and trim whitespace
     const match = str.match(/^(.+?)\s*\(/);
     return match ? match[1].trim() : null;
+}
+
+function toTitleCase(str) {
+  if (!str) {
+    return ""
+  }
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 function findRowDataBySpecies(speciesName) {
@@ -397,6 +421,40 @@ function findRowDataBySpecies(speciesName) {
     }
     return {}
 }
+
+// Returns [fragCount, frags, met location, nickname]
+function prevoData(speciesName, encounters) {
+    let ancestor = evoData[speciesName]["anc"]
+
+
+
+    if (ancestor == speciesName) {
+        return [0, [], false, false]
+    }
+
+    let evos = [ancestor].concat(evoData[ancestor]["evos"])
+
+    // if (speciesName.includes("Rotom-")) {
+    //     ancestor = ["Rotom", "Rotom-Mow", "Rotom-Frost", "Rotom-Heat", "Rotom-Fan", "Rotom-Wash"]
+    // }
+
+    // Look for later evolutions first
+    for (let i = evos.length - 1; i >= 0; i--) {
+        mon = evos[i]
+        if (encounters[mon] && mon != speciesName) {
+            if (typeof encounters[mon].setData["My Box"] == "undefined" ) {
+                return [encounters[mon].fragCount, encounters[mon].frags, "Unknown", speciesName]
+            } else {
+               return [encounters[mon].fragCount, encounters[mon].frags, encounters[mon].setData["My Box"].met, encounters[mon].setData["My Box"].nn] 
+            }
+            
+        }
+    }
+
+    return [0, [], false, false]
+}
+
+
 
 function createRowData() {
     allKos = 0
@@ -418,7 +476,24 @@ function createRowData() {
             }
         }
 
+
+        // merge frags with prevos
+        let prevo = prevoData(enc, encounters)
+        let uniqFrags = [...new Set(encounters[enc].frags.concat(prevo[1]))].filter(item => item !== undefined);
+
+        encounters[enc].frags = uniqFrags
+        encounters[enc].fragCount = uniqFrags.length
+        encRow.frags = uniqFrags
+        encRow.fragCount = uniqFrags.length
+
+
+
+
+
+
+
         if (foundEvo) {
+            console.log(`EVO FOUND for ${enc}`)
             continue
         }
 
@@ -430,15 +505,43 @@ function createRowData() {
         deadCount++
        }
 
+  
+       
        let setData = encounters[enc].setData["My Box"]
 
-       encRow.nickname = setData.nn || enc
-       encRow.species = enc
+       if (typeof setData == "undefined" && enc.includes("Rotom-") && typeof encounters["Rotom"].setData != "undefined") {
+            setData = encounters["Rotom"].setData
+       } 
+
+       if (typeof setData == "undefined" || setData == {}) {
+            setData = JSON.parse(localStorage.customsets)[enc]
+       }
+
+       if (typeof setData == "undefined") {
+            console.log(`no set data found for ${enc}`)
+            continue;
+        }
+
+
+
+
+
 
        
-       encRow.encounterLocation = setData.met
-       encRow.nature = setData.nature
-       encRow.ability = setData.ability
+       encRow.species = enc
+
+        if (typeof setData == "undefined") {
+            encRow.nickname = enc
+            encRow.encounterLocation = "Click to Edit"
+            encRow.nature = "Unknown"
+            encRow.ability = "Unknown"
+        } else {
+            encRow.nickname = setData.nn || enc
+            encRow.encounterLocation = setData.met
+            encRow.nature = setData.nature
+            encRow.ability = setData.ability
+        }
+       
 
        if (!setData.ivs) {
            encRow.hp = 31
@@ -471,23 +574,31 @@ function createRowData() {
         let trName = extractTrainerName(frag)
 
 
+
+
         globalSeenTrainers[trName] ||= true
         seenTrainers[trName] ||= true
 
         splitFound = false
 
         for( index in lvlcaps) {
-            let minCap = 0
+            let minCap = -10
 
             if (index > 0) {
                 minCap = lvlcaps[index - 1]
             }
+
+
+
+
 
             if (level <= lvlcaps[index] && level > minCap && (activeSplit == "all" || activeSplit == "all-simple" || activeSplit == index)) {
                 encRow[`split${index}`] += 1
                 encRow[`split${index}FragInfo`].push(frag)
                 encRow.totalKo += 1
                 allKos += 1 
+
+
                 break
             }  
             if (index == 8 && level > minCap && (activeSplit == "all" || activeSplit == "all-simple" || activeSplit == 8)) {
@@ -554,13 +665,21 @@ $(document).on('click', '.status-dead', function() {
 
 $('#delete-enc').click(function() {
     let speciesName = $(this).text().split("Delete ")[1]
-    if (confirm(`Delete ${speciesName} from your encounters?`)) {
+    if (confirm(`Delete ${speciesName} from your encounters and custom sets?`)) {
         delete encounters[speciesName]
-
         localStorage.encounters = JSON.stringify(encounters);
 
         createRowData()
         gridApi.setGridOption('rowData', rowData);
+
+        var sets = JSON.parse(localStorage.customsets)
+
+        delete sets[speciesName]['My Box']
+        localStorage.toDelete = speciesName
+        localStorage.customsets = JSON.stringify(sets)
+
+
+
 
     }
 })
@@ -600,7 +719,8 @@ document.addEventListener('DOMContentLoaded', () => {
         defaultColDef: {
             sortable: true,
             resizable: true,
-            filter: true
+            filter: true,
+            cellClass: (params) => `field-${params.colDef.field}`
         },
         getRowStyle: params => {
             let styles = {}

@@ -40,8 +40,6 @@ input[type="file"] {
   background: none;
 }
 
-
-
 .filterable.doc-enc {
     background: #383a59;
 }
@@ -98,32 +96,6 @@ input[type="file"] {
     min-height: 50px;
 }
 
-#open-menu {
-    height:  40px;
-    cursor: pointer;
-}
-
-#settings-menu {
-    border: 2px solid #f1f1f1;
-    z-index: 100;
-    position: absolute;
-    top: 70px;
-    background: #181818;
-    width: 160px;
-    padding: 4px;
-    display: none;
-
-
-}
-
-.menu-item {
-    font-size: 16px;
-    font-weight: 400;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: center;
-}
-
 .crit-text {
     color:  #FF5555;
 }
@@ -135,8 +107,11 @@ input[type="file"] {
 
 #lvl-cap {
     padding:  4px;
-    width:  60px;
+    width:  80px;
     display: none;
+    height: 32px;
+    text-align: center;
+    font-size: 22px;
 }
 
 #reasoning {
@@ -156,6 +131,18 @@ input[type="file"] {
     z-index: 12;
 }
 
+#player-tags {
+    justify-content: space-between;
+    width: calc(100% - 12px);
+    left: 10px;
+}
+
+#tags-left, #tags-right {
+    display: flex;
+}
+
+
+
 .info-group.top {
     min-height: 100px;
 }
@@ -172,7 +159,7 @@ input[type="file"] {
 
 
 
-#ai-tags div, #nav-tags div,  #learnset-show, #box-remove, #save-pok, #add-party-pok {
+#ai-tags div, #nav-tags div,  #learnset-show, #box-remove, #save-pok, #add-party-pok, #met-loc, #frag-count {
     line-height: 20px;
     margin-right: 10px;
     color: #bb86fc;
@@ -180,7 +167,12 @@ input[type="file"] {
     border: 1px solid #bb86fc;
     padding: 0px 4px;
     display: none;
-/*    color: rgb(248, 248, 242);*/
+}
+
+#met-loc, #frag-count {
+    color: #f8f8f2;
+    border: 1px solid rgb(118, 118, 118);
+    background: rgba(12,12,12,0.5);
 }
 
 .bp-info {
@@ -283,11 +275,11 @@ input[type="file"] {
 }
 
 .title-text {
-    line-height: 40px;
-    height:  40px;
+    line-height: 32px;
+    height:  32px;
     width: auto;
     position: absolute;
-    left: 80px;
+    left: 70px;
     top: -10px;
 }
 
@@ -307,12 +299,12 @@ input[type="file"] {
     height: 40px;
     line-height: 34px;
     border-radius: 0px;
-    max-width: 617px;
+    /*max-width: 617px;*/
 }
 
 .opposing .select2-choice {
     padding-right: 30px;
-    max-width: 586px;
+    /*max-width: 586px;*/
 }
 
 select {
@@ -671,6 +663,27 @@ table td {
     background: #181818;
 }
 
+#search-row {
+    display: flex;
+    height: 32px;
+    padding-left: 12px;
+    margin-top: 10px;
+    display: none;
+}
+
+#search-label {
+    line-height: 32px;
+    background: none;
+}
+
+#search-box {
+    width: 360px;
+    margin-left: 10px;
+    padding-left: 4px;
+}
+
+
+
 .player-poks {
     background: rgba(255,255,255,0.1);
     background-size: 100% 595px;
@@ -683,7 +696,7 @@ table td {
     min-height: 65px;
     max-height: 595px;
     justify-content: flex-start;
-    margin-top:  26px;
+    margin-top:  10px;
 
 }
 
@@ -737,6 +750,14 @@ table td {
     border: 1px solid #bb86fc;
 }
 
+#redux-lvl {
+    color: #bb86fc;
+    font-size: 12px;
+    display: inline-block;
+    cursor: pointer;
+    display: none;
+}
+
 #edge {
     line-height: 20px;
     margin-right: 10px;
@@ -756,20 +777,31 @@ table td {
 #player-poks-filter {
     margin-left:  12px;
     margin-bottom:  20px;
+    margin-top: 10px;
     display: none;
 }
 
 .filter-row {
     display: flex;
     align-items: center;
+    width: calc(100% - 10px);
+    justify-content: space-between;
+    height: 30px;
+    line-height: 30px;
+
 }
 
 #min-dealt-label {
     color:  #ff5555;
 }
 
-#max-taken-label {
+#max-taken-label, #filter-move-label {
     color:  #6272a4;
+}
+
+#filter-move {
+    height: 26px;
+    margin: 2px 0px;
 }
 
 #faster-label {
@@ -783,6 +815,89 @@ table td {
 .trainer-pok.left-side.killer {
     background: rgba(255, 85, 85, 0.4);
 }
+
+
+#ohko-label {
+    color: rgba(80, 250, 123, 0.8);
+}
+
+#ohkod-label {
+    color: rgba(255, 85, 85, 0.8);
+}
+
+#mb-ohko-label {
+    color: rgba(80, 250, 123, 0.35);
+}
+
+#mb-ohkod-label {
+    color: rgba(255, 85, 85, 0.35);
+}
+
+.trainer-pok.left-side.ohko {
+  background: rgba(80, 250, 123, 0.8);
+  background: linear-gradient(rgba(80, 250, 123, 0.8), rgba(80, 250, 123, 0.8));
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+}
+
+.trainer-pok.left-side.mb-ohko:not(.ohko) {
+      background: rgba(80, 250, 123, 0.35);
+      background: linear-gradient(rgba(80, 250, 123, 0.35), rgba(80, 250, 123, 0.35));
+      background-size: 50% 100%;
+      background-repeat: no-repeat;
+}
+
+.trainer-pok.left-side.ohkod {
+      background: rgba(255, 85, 85, 0.8);
+      background: linear-gradient(rgba(255, 85, 85, 0.8), rgba(255, 85, 85, 0.8));
+      background-size: 50% 100%;
+      background-repeat: no-repeat;
+      background-position: right; 
+}
+
+.trainer-pok.left-side.mb-ohkod:not(.ohkod) {
+      background: rgba(255, 85, 85, 0.35);
+      background: linear-gradient(rgba(255, 85, 85, 0.35), rgba(255, 85, 85, 0.35));
+      background-size: 50% 100%;
+      background-repeat: no-repeat;
+      background-position: right; 
+}
+
+
+
+.trainer-pok.left-side.ohkod.ohko {
+    background: repeating-linear-gradient(
+      to right,
+      rgba(80, 250, 123, 0.8) 0 50%,
+      rgba(255, 85, 85, 0.8) 50% 100%
+    );
+}
+
+.trainer-pok.left-side.mb-ohkod:not(.ohkod).ohko {
+    background: repeating-linear-gradient(
+      to right,
+      rgba(80, 250, 123, 0.8) 0 50%,
+      rgba(255, 85, 85, 0.35) 50% 100%
+    );
+}
+
+.trainer-pok.left-side.mb-ohko:not(.ohko).ohkod {
+    background: repeating-linear-gradient(
+      to right,
+      rgba(80, 250, 123, 0.35) 0 50%,
+      rgba(255, 85, 85, 0.8) 50% 100%
+    );
+}
+
+.trainer-pok.left-side.mb-ohkod.mb-ohko:not(.ohko):not(.ohkod) {
+    background: repeating-linear-gradient(
+      to right,
+      rgba(80, 250, 123, 0.35) 0 50%,
+      rgba(255, 85, 85, 0.35) 50% 100%
+    );
+}
+
+
 
 .trainer-pok.left-side.defender {
     background: rgba(98, 114, 164, 1);
@@ -858,8 +973,9 @@ table td {
 
 .trainer-pok-list .pokesprite.left-side, .pokesprite .trainer-pok.left-side {
     margin: 0px;
-    height: 65px;
+    height: 64px;
     width: auto;
+    margin-right: 1px;
 }
 
 .trainer-pok.right-side {
@@ -876,7 +992,7 @@ table td {
     margin-bottom: 10px;
 }
 
-.left-side:hover {
+.left-side:hover, .left-side.active {
     border:  3px solid #1abc9c;
     border-radius: 10px;
 }
@@ -948,9 +1064,6 @@ table td {
     display:  none !important;
 }
  
-
-
-
 .trainer-pok-list.opposing.no-switch .trainer-pok-container {
     border:  1px solid rgb(0,0,0,0) !important;
 
@@ -1044,6 +1157,22 @@ th {
     box-sizing: border-box;
     padding:  10px;
     width: calc(100% - 5px);
+}
+
+.field-info.sun {
+    background-color: rgba(168, 71, 0, 0.15);
+}
+
+.field-info.rain {
+    background-color: rgba(26, 88, 174, 0.15);
+}
+
+.field-info.sand {
+    background-color: rgba(120, 102, 0, 0.15);
+}
+
+.field-info.snow, .field-info.hail {
+    background-color: rgba(92, 153, 153, 0.15);
 }
 
 #similarTrainers {
@@ -1608,7 +1737,9 @@ table.field {
   }
 
   .poke-sprite {
-    display: none;
+    height: 60px;
+    max-width: initial;
+    top: 120px;
   }
 
   .wrapper {
